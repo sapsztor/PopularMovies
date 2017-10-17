@@ -1,7 +1,6 @@
 package com.dwbi.android.popularmovies.utilities;
 
 import android.net.Uri;
-import android.support.compat.BuildConfig;
 import android.util.Log;
 
 import java.net.URL;
