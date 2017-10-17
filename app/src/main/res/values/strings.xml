@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <!--<string name="menu_refresh">Refresh</string>-->
+    <string name="menu_label_sortby_popular">Popular</string>
+    <string name="menu_label_sortby_top_rated">Top rated</string>
+    <string name="query_param_value_sortby_popular">popular</string>
+    <string name="query_param_value_sortby_top_rated">top_rated</string>
+    <string name="preferred_sort_order">preferred_sort_order</string>
+    <!--<string name="menu_label_query_more">Query more</string>-->
+    <string name="detail_activity_label">Movie details</string>
+    <string name="vote_average_title">Vote Average</string>
+    <string name="vote_average">7.3</string>
+    <string name="release_date_title">Release Date</string>
+    <!--<string name="release_date">2016.04.19</string>-->
+    <string name="overview_title">Plot</string>
+    <string name="iv_poster_desc">This image hold the actual movie poster image provided by The Movie DB</string>
+
+</resources>
