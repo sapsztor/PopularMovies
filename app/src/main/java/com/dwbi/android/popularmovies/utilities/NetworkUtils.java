@@ -3,6 +3,8 @@ package com.dwbi.android.popularmovies.utilities;
 import android.net.Uri;
 import android.util.Log;
 
+//import com.dwbi.android.popularmovies.BuildConfig;
+
 import java.net.URL;
 
 import java.io.IOException;
@@ -24,6 +26,7 @@ public class NetworkUtils {
 
 
     private static final String API_KEY = com.dwbi.android.popularmovies.BuildConfig.API_KEY;
+    //private static final String API_KEY = BuildConfig.API_KEY;
 
 
     public static URL buildQueryUrl(String sortBy , String pageNum) {

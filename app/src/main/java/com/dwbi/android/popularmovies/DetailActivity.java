@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -38,11 +40,14 @@ public class DetailActivity extends AppCompatActivity {
         tv_release_date = (TextView) findViewById(R.id.tv_release_date);
 
         Intent intent = getIntent();
-        String posterpath = intent.getStringExtra("posterpath");
-        String title = intent.getStringExtra("title");
-        String overview = intent.getStringExtra("overview");
-        String vote_average = intent.getStringExtra("vote_average");
-        String release_date = intent.getStringExtra("release_date");
+        Movie movie = intent.getExtras().getParcelable(getString(R.string.extra_selectedmovie));
+
+
+        String posterpath = movie.getPosterPath();
+        String title = movie.getTitle();
+        String overview = movie.getOverview();
+        String vote_average = movie.getVote_Average();
+        String release_date = movie.getRelease_Date();
 
         tv_title.setText(title);
         tv_overview.setText(overview);

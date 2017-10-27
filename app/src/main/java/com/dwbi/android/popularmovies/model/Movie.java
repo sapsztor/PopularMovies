@@ -2,15 +2,17 @@ package com.dwbi.android.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by PSX on 10/1/2017.
  */
-// //TODO: implementing Parcellable interface
+
 @SuppressWarnings("DefaultFileTemplate")
 public class Movie implements Parcelable {
 
     private final String title;
+    @SerializedName("poster_path")
     private final String posterpath;
     private final String overview;
     private final String vote_average;

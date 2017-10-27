@@ -129,12 +129,7 @@ public class MainActivity extends AppCompatActivity implements TMDBQueryTask.Asy
 
         Context context = this;
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra("title", movie.getTitle());
-        intent.putExtra("posterpath", movie.getPosterPath());
-        intent.putExtra("overview", movie.getOverview());
-        intent.putExtra("vote_average", movie.getVote_Average());
-        intent.putExtra("release_date", movie.getRelease_Date());
-
+        intent.putExtra(getString(R.string.extra_selectedmovie), movie);
         startActivityForResult(intent, DETAIL_ACTIVITY_RESPONSE);
     }
     //----------------------------------------------------------------------------------------------
