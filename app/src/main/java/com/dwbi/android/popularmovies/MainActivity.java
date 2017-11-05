@@ -1,8 +1,11 @@
 package com.dwbi.android.popularmovies;
 
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+
+// import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,12 +24,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import android.support.v4.content.Loader;
+import android.support.v4.app.LoaderManager;
+//import android.support.v4.app.LoaderManager.LoaderCallbacks;
+
 import com.dwbi.android.popularmovies.model.Movie;
 
 import java.util.ArrayList;
 
 @SuppressWarnings("UnnecessaryReturnStatement")
-public class MainActivity extends AppCompatActivity implements TMDBQueryTask.AsyncResponse , MoviesAdapter.AdapterStatusListener {
+public class MainActivity extends AppCompatActivity implements  MoviesAdapter.AdapterStatusListener {
 
     private static final int DETAIL_ACTIVITY_RESPONSE = 12345;
 
@@ -45,6 +52,43 @@ public class MainActivity extends AppCompatActivity implements TMDBQueryTask.Asy
     // save recyclerview state  https://stackoverflow.com/questions/28236390/recyclerview-store-restore-state-between-activities
     private final String KEY_RECYCLER_STATE = "recycler_state";
     private static Bundle recyclerViewState;
+
+    //--------------------------------------------------------------------------
+    //http://www.androiddesignpatterns.com/2012/08/implementing-loaders.html
+    private static final int MOVIE_LOADER_ID = 1;
+    private LoaderManager.LoaderCallbacks<ArrayList<Movie>> loaderCallbacks = new LoaderCallback();
+
+
+     private class LoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+        //------------------------------------------------------------------------------------------
+        @Override
+        public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
+            if(args == null) {
+                return null;
+            }
+            String sortBy = args.getString("sortBy");
+            String pageNum = args.getString("pageNum");
+
+            TMDBQueryLoader loader = new TMDBQueryLoader(MainActivity.this, sortBy, pageNum);
+
+            return loader;
+        }
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+            if (null == data) {
+            } else {
+                processResponse(data);
+            }
+        }
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+
+        }
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+     }
 
     //--------------------------------------------------------------------------
     private final Handler handler = new Handler(){
@@ -83,7 +127,9 @@ public class MainActivity extends AppCompatActivity implements TMDBQueryTask.Asy
         initRecyclerView();
 
         pageNum = 1;
+        //startQuery(getQueryPreference(), Integer.toString(pageNum));
         startQuery(getQueryPreference(), Integer.toString(pageNum));
+
     }
 
     //----------------------------------------------------------------------------------------------
@@ -171,18 +217,25 @@ public class MainActivity extends AppCompatActivity implements TMDBQueryTask.Asy
         }
     }
     //----------------------------------------------------------------------------------------------
-    // after the TMDBQueryTask finish then it calls the processResponse method
     private void startQuery(String sortBy, String pageNum){
         pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
         pb_loading_indicator.setVisibility(View.VISIBLE);
 
         checkInternetConnection();
-        TMDBQueryTask task = new TMDBQueryTask(this);
-        task.execute(sortBy, pageNum);
+        Bundle loadBundle = new Bundle();
+        loadBundle.putString("sortBy", sortBy);
+        loadBundle.putString("pageNum", pageNum);
 
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LOADER_ID);
+        if(movieLoader == null){
+            loaderManager.initLoader(MOVIE_LOADER_ID, loadBundle,   loaderCallbacks);
+
+        } else {
+            loaderManager.restartLoader(MOVIE_LOADER_ID, loadBundle, loaderCallbacks);
+        }
     }
-    //----------------------------------------------------------------------------------------------
-    // to query more from web only has to do is increment the pageNum variable and call the startQuery
+    //----------------------------------------------------------------------------------------------    // to query more from web only has to do is increment the pageNum variable and call the startQuery
     private void queryMore(){
         if (adapter == null) {
             return;
@@ -192,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements TMDBQueryTask.Asy
         startQuery(getQueryPreference(), Integer.toString(pageNum));
     }
     //----------------------------------------------------------------------------------------------
-    @Override
     public void processResponse(ArrayList<Movie> response) {
         ArrayList<Movie> tmpData;
         if (response == null) {
