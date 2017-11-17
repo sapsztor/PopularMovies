@@ -1,6 +1,7 @@
 package com.dwbi.android.popularmovies;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
@@ -52,10 +53,19 @@ import com.squareup.picasso.Picasso;
     }
 
     //--------------------------------------------------------------------------
+    public void appendData(ArrayList<Movie> data) {
+        //notifyItemRangeChanged(int positionStart, int itemCount)
+        int positionStart = movieData.size() - 1;
+        int itemCount = data.size();
+        this.movieData.addAll(data);
+
+        //notifyItemRangeChanged(positionStart, itemCount);
+        notifyDataSetChanged();
+    }
+    //--------------------------------------------------------------------------
     @Override
     public int getItemCount() {
         return movieData.size();
-        //
     }
     //--------------------------------------------------------------------------
 
@@ -86,13 +96,14 @@ import com.squareup.picasso.Picasso;
 
     //--------------------------------------------------------------------------
 
+    //----------------------------------------------------------------------------------------------
     @Override
     public void onViewAttachedToWindow(MovieViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         int position = holder.getAdapterPosition();
 
 
-        int Gap = 2;
+        int Gap = 6;
         if (position == (getItemCount() - Gap)) {
             Message msg = handler_to_main.obtainMessage(1);
             handler_to_main.sendMessage(msg);
