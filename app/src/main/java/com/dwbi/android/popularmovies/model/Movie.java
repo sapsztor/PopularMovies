@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 @SuppressWarnings("DefaultFileTemplate")
 public class Movie implements Parcelable {
 
+    private final String id;
     private final String title;
     @SerializedName("poster_path")
     private final String posterpath;
@@ -18,11 +19,13 @@ public class Movie implements Parcelable {
     private final String vote_average;
     private final String release_date;
 
-    public  Movie(String title,
-                      String posterpath,
-                      String overview,
-                      String vote_average,
-                      String release_date) {
+    public  Movie(String id,
+                  String title,
+                  String posterpath,
+                  String overview,
+                  String vote_average,
+                  String release_date) {
+        this.id = id;
         this.title = title;
         this.posterpath = posterpath;
         this.overview = overview;
@@ -30,6 +33,7 @@ public class Movie implements Parcelable {
         this.release_date = release_date;
     }
 
+    public String getId() {return id;}
     public String getTitle() {return title;}
     public String getPosterPath() {return posterpath;}
     public String getOverview() {return overview;}
@@ -37,6 +41,7 @@ public class Movie implements Parcelable {
     public String getRelease_Date() {return release_date;}
 
     private Movie(Parcel in) {
+        this.id = in.readString();
         this.title = in.readString();
         this.posterpath = in.readString();
         this.overview = in.readString();
@@ -55,7 +60,7 @@ public class Movie implements Parcelable {
 
     @Override
     public String toString(){
-        return title + ", " + posterpath + ", " + overview + ", " + vote_average + ", " + release_date;
+        return id + ", " + title + ", " + posterpath + ", " + overview + ", " + vote_average + ", " + release_date;
     }
 
     @Override
@@ -65,6 +70,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
         dest.writeString(this.title);
         dest.writeString(this.posterpath);
         dest.writeString(this.overview);

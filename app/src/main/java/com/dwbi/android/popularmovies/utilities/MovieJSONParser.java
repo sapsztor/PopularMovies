@@ -36,6 +36,7 @@ public class MovieJSONParser {
                 JSONObject row = moviesJSONArray.getJSONObject(i);
 
                 Movie tmpMovie = new Movie(
+                        row.getString("id"),
                         row.getString("title"),
                         row.getString("poster_path"),
                         row.getString("overview"),
