@@ -20,6 +20,12 @@
         android:title="@string/menu_label_sortby_top_rated"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_favorites"
+        android:orderInCategory="3"
+        android:title="@string/menu_label_favorites"
+        app:showAsAction="never" />
+
     <!--<item-->
         <!--android:id="@+id/action_fetch_more"-->
         <!--android:orderInCategory="3"-->

@@ -77,7 +77,7 @@ import com.squareup.picasso.Picasso;
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-
+        
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.movie_poster_item, parent, false);
         return new MovieViewHolder(view);

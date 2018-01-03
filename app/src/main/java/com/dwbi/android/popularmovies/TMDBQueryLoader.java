@@ -41,29 +41,17 @@ public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
     @Override
     protected void onStartLoading() {
         //super.onStartLoading();
-        Log.d("PSX", "TMDBQueryLoader.onStartLoading");
-        Log.d("PSX", "TMDBQueryLoader.result-> " + result);
 
         if (result != null) {
-            Log.d("PSX", "TMDBQueryLoader.onStartLoading cached.");
-            Log.d("PSX", "TMDBQueryLoader.result-> " + result);
             deliverResult(result);
         } else {
-            Log.d("PSX", "TMDBQueryLoader.onStartLoading forceload.");
-            Log.d("PSX", "TMDBQueryLoader.result-> " + result);
             forceLoad();
         }
-        //if(takeContentChanged() || result == null) {
-//        if( result == null) {
-//            Log.d("PSX", "TMDBQueryLoader.onStartLoading forceload.");
-//            forceLoad();
-//        }
     }
 
 
     @Override
     public void deliverResult(ArrayList<Movie> data) {
-        Log.d("PSX", "TMDBQueryLoader.deliverResult");
         if (isReset()) {
             return;
         }
@@ -74,18 +62,10 @@ public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
 
     }
 
-//    @Override
-//    public void deliverResult(ArrayList<Movie> data) {
-//        Log.d("PSX", "TMDBQueryLoader.deliverResult");
-//        result = data;
-//        super.deliverResult(data);
-//    }
-//
     @Override
     public ArrayList<Movie> loadInBackground() {
         //----------------------- RETROFIT ---------------------------------------------------------
 
-        //Log.d("PSX", "---- R E T R O F I T ------------");
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/")
                 .addConverterFactory(GsonConverterFactory.create())

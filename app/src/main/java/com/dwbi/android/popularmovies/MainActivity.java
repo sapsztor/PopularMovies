@@ -8,6 +8,7 @@ import android.content.Intent;
 // import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,13 +34,14 @@ import android.support.v4.app.LoaderManager;
 
 import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
+import com.dwbi.android.popularmovies.utilities.FavoriteQueryLoader;
 
 import java.util.ArrayList;
 
 @SuppressWarnings("UnnecessaryReturnStatement")
 public class MainActivity extends AppCompatActivity implements  MoviesAdapter.AdapterStatusListener {
 
-    private static final int DETAIL_ACTIVITY_RESPONSE = 12345;
+    public static final int DETAIL_ACTIVITY_RESPONSE = 12345;
 
 
 
@@ -48,23 +51,24 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     @SuppressWarnings("CanBeFinal")
     private ArrayList<Movie> movieData = new ArrayList<>();
     private MoviesAdapter adapter;
+    private FavoriteMoviesAdapter favAdapter;
 
 
     private int pageNum = 1;
 
     // save recyclerview state  https://stackoverflow.com/questions/28236390/recyclerview-store-restore-state-between-activities
     private final String KEY_RECYCLER_STATE = "recycler_state";
-    private static Bundle recyclerViewState;
+    private static Parcelable recyclerViewState;
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
     //--------------------------------------------------------------------------
     //http://www.androiddesignpatterns.com/2012/08/implementing-loaders.html
-    private static final int MOVIE_LOADER_ID = 1;
+    public static final int MOVIE_LOADER_ID = 1;
+    public static final int FAVORITE_LOADER_ID = 2;
+    
     private LoaderManager.LoaderCallbacks<ArrayList<Movie>> loaderCallbacks = new LoaderCallback();
-
-
-     private class LoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+    private class LoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
         //------------------------------------------------------------------------------------------
         @Override
         public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
@@ -73,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
             }
             String sortBy = args.getString("sortBy");
             String pageNum = args.getString("pageNum");
-
-            Log.d("PSX", "MainActivity.onCreateLoader.pageNum-> " + pageNum);
 
             TMDBQueryLoader loader = new TMDBQueryLoader(MainActivity.this, sortBy, pageNum);
 
@@ -95,8 +97,10 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         }
         //------------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------
-     }
+    }
+    
 
+    
     //--------------------------------------------------------------------------
     private final Handler handler = new Handler(){
         @Override
@@ -122,72 +126,86 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         GridLayoutManager layoutManager = new GridLayoutManager(this, getSpan());
         rv_video_thumb.setLayoutManager(layoutManager);
         rv_video_thumb.setHasFixedSize(false);
-        adapter = new MoviesAdapter(this, handler);
+        
+
+        setAdapter();
 
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, final RecyclerView view) {
                 queryMore();
+                Log.d("PSX", "EndlessRecyclerViewScrollListener.onLoadMore page-> " + page + " totalItemsCount-> " + totalItemsCount );
             }
         };
-
         rv_video_thumb.addOnScrollListener(scrollListener);
 
     }
     //----------------------------------------------------------------------------------------------
-
+    private void setAdapter(){
+        if(getQueryPreference().equals(getString(R.string.query_param_value_favorites))){
+            favAdapter = new FavoriteMoviesAdapter(this);
+            rv_video_thumb.setAdapter(favAdapter);
+        } else {
+            adapter = new MoviesAdapter(this, handler);
+            rv_video_thumb.setAdapter(adapter);
+        }
+    }
     //----------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_scroll);
-
+        
         rv_video_thumb =  findViewById(R.id.rv_video_thumb);
         pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
-
+        
         if(getQueryPreference() == null){
             setQueryPreference(getString(R.string.query_param_value_sortby_popular));
         }
 
-
         initRecyclerView();
-
+//        if (savedInstanceState != null) {
+//            recyclerViewState = savedInstanceState.getParcelable(KEY_RECYCLER_STATE);
+//            rv_video_thumb.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+//
+//        }
         pageNum = 1;
-        //startQuery(getQueryPreference(), Integer.toString(pageNum));
-        startQuery(getQueryPreference(), Integer.toString(pageNum));
-
-
-    }
-
-    //----------------------------------------------------------------------------------------------
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (recyclerViewState != null) {
-            Parcelable listState = recyclerViewState.getParcelable(KEY_RECYCLER_STATE);
-            rv_video_thumb.getLayoutManager().onRestoreInstanceState(listState);
-        }
+        
+        startQuery(getQueryPreference(), pageNum);
+        
 
     }
     //----------------------------------------------------------------------------------------------
+    
     @Override
     protected void onPause() {
         super.onPause();
-        recyclerViewState = new Bundle();
-        if (rv_video_thumb != null) {
-            Parcelable listState = rv_video_thumb.getLayoutManager().onSaveInstanceState();
-            recyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
-        }
+    }
+    
+    //----------------------------------------------------------------------------------------------
+    
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+    
+    //----------------------------------------------------------------------------------------------
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        recyclerViewState = rv_video_thumb.getLayoutManager().onSaveInstanceState();
+        savedInstanceState.putParcelable(KEY_RECYCLER_STATE, recyclerViewState);
+
     }
     //----------------------------------------------------------------------------------------------
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        GridLayoutManager layoutManager = (GridLayoutManager) rv_video_thumb.getLayoutManager();
-        layoutManager.onSaveInstanceState();
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
 
     }
-
+    
     //----------------------------------------------------------------------------------------------
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -243,33 +261,41 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         }
     }
     //----------------------------------------------------------------------------------------------
-    private void startQuery(String sortBy, String pageNum){
-        pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
-        pb_loading_indicator.setVisibility(View.VISIBLE);
+    private void startQuery(String sortBy, int pageNum){
 
-        checkInternetConnection();
-        Bundle loadBundle = new Bundle();
-        loadBundle.putString("sortBy", sortBy);
-        loadBundle.putString("pageNum", pageNum);
+        Log.d("PSX", "startQuery pageNum-> " + pageNum);
+        if(pageNum == 1 ) {
+            setAdapter();
+        }
 
-
-        LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LOADER_ID);
-        if(movieLoader == null){
-            loaderManager.initLoader(MOVIE_LOADER_ID, loadBundle,   loaderCallbacks);
-
+        if(getQueryPreference().equals(getString(R.string.query_param_value_favorites))){
+            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, new FavoriteQueryLoader(this, favAdapter));
         } else {
+            
+            //setAdapter();
+            pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
+            pb_loading_indicator.setVisibility(View.VISIBLE);
+            checkInternetConnection();
+            Bundle loadBundle = new Bundle();
+            loadBundle.putString("sortBy", sortBy);
+            loadBundle.putString("pageNum", Integer.toString(pageNum));
+    
+
+            LoaderManager loaderManager = getSupportLoaderManager();
+            Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LOADER_ID);
             loaderManager.restartLoader(MOVIE_LOADER_ID, loadBundle, loaderCallbacks);
         }
     }
     //----------------------------------------------------------------------------------------------    // to query more from web only has to do is increment the pageNum variable and call the startQuery
     private void queryMore(){
+        
         if (adapter == null) {
             return;
         }
 
         pageNum++;
-        startQuery(getQueryPreference(), Integer.toString(pageNum));
+        Log.d("PSX", "queryMore pageNum-> " + pageNum);
+        startQuery(getQueryPreference(), pageNum);
 
         if (pageNum > 1) {
             int scrollPosition = ((this.pageNum - 1) * 20) - 4;
@@ -278,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     }
     //----------------------------------------------------------------------------------------------
     public void processResponse(ArrayList<Movie> response) {
-
+        
         ArrayList<Movie> tmpData;
         if (response == null) {
             tmpData = new ArrayList<>();
@@ -295,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
 
 
         } else {
+            Log.d("PSX", "MainActivity.processResponse.pageNum append-> " + pageNum);
             int curSize = adapter.getItemCount();
             adapter.appendData(response);
         }
@@ -303,6 +330,10 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
             rv_video_thumb.setAdapter(adapter);
         }
         adapter.notifyDataSetChanged();
+        
+        if(recyclerViewState != null){
+            rv_video_thumb.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+         }
 
         pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
         pb_loading_indicator.setVisibility(View.INVISIBLE);
@@ -323,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         if(text == null || text != sortOrder) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(getString(R.string.preferred_sort_order), sortOrder);
-            //editor.commit();
             editor.apply();
         }
     }
@@ -343,21 +373,29 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
                 if(getString(R.string.query_param_value_sortby_popular) != getQueryPreference()){
                     setQueryPreference(getString(R.string.query_param_value_sortby_popular));
                     pageNum = 1;
-                    adapter.clearData();
-                    startQuery(getQueryPreference(), Integer.toString(pageNum));
+                    startQuery(getQueryPreference(), pageNum);
                 }
                 return true;
-
+    
             case R.id.action_top_rated:
                 //noinspection StringEquality
                 if(getString(R.string.query_param_value_sortby_top_rated) != getQueryPreference()){
                     setQueryPreference(getString(R.string.query_param_value_sortby_top_rated));
                     pageNum = 1;
-                    adapter.clearData();
-                    startQuery(getQueryPreference(), Integer.toString(pageNum));
+                    startQuery(getQueryPreference(), pageNum);
                 }
                 return true;
-
+    
+            case R.id.action_favorites:
+                //noinspection StringEquality
+                if(getString(R.string.query_param_value_favorites) != getQueryPreference()){
+                    setQueryPreference(getString(R.string.query_param_value_favorites));
+    
+                    pageNum = 1;
+                    startQuery(getQueryPreference(), pageNum);
+                }
+                return true;
+    
             default:
                 return true;
         }

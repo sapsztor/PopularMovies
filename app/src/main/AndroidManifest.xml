@@ -28,6 +28,13 @@
                 android:value="com.dwbi.android.popularmovies.MainActivity">
             </meta-data>
         </activity>
+
+        <provider
+            android:authorities="com.dwbi.android.popularmovies"
+            android:name="com.dwbi.android.popularmovies.model.MovieProvider"
+            android:exported="false">
+        </provider>
+
     </application>
 
 </manifest>
