@@ -17,5 +17,6 @@
     <string name="overview_title">Plot</string>
     <string name="iv_poster_desc">This image hold the actual movie poster image provided by The Movie DB</string>
     <string name="extra_selectedmovie">selectedmovie</string>
+    <string name="trailers_title">Trailers</string>
 
 </resources>

@@ -23,7 +23,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
     private static final String API_KEY = com.dwbi.android.popularmovies.BuildConfig.API_KEY;
+    
+    private static String BASE_URL = "http://api.themoviedb.org/";
 
+   
     String sortBy;
     String pageNum;
 
@@ -67,7 +70,7 @@ public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
         //----------------------- RETROFIT ---------------------------------------------------------
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

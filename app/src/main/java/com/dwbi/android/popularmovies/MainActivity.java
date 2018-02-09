@@ -286,7 +286,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
             loaderManager.restartLoader(MOVIE_LOADER_ID, loadBundle, loaderCallbacks);
         }
     }
-    //----------------------------------------------------------------------------------------------    // to query more from web only has to do is increment the pageNum variable and call the startQuery
+    //----------------------------------------------------------------------------------------------
+    // to query more from web only has to do is increment the pageNum variable and call the startQuery
     private void queryMore(){
         
         if (adapter == null) {

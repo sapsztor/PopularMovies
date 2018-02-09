@@ -4,11 +4,14 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -16,12 +19,23 @@ import android.widget.ToggleButton;
 
 import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.model.MovieContract;
+import com.dwbi.android.popularmovies.model.Trailer;
+import com.dwbi.android.popularmovies.utilities.FavoriteQueryLoader;
 import com.dwbi.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 
 public class DetailActivity extends AppCompatActivity {
-
+    private static final String TAG = "PSX";
+    
+    public static final int TRAILER_LOADER_ID = 3;
+    
+    private LoaderManager.LoaderCallbacks<ArrayList<Trailer>> loaderCallbacks = new LoaderCallback();
+    
+    GridView gv_trailer;
+    
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -35,6 +49,8 @@ public class DetailActivity extends AppCompatActivity {
         TextView tv_release_date;
         
         final ToggleButton btn_favorite_toggle;
+        
+        
 
 
         //noinspection RedundantCast
@@ -49,6 +65,10 @@ public class DetailActivity extends AppCompatActivity {
         tv_release_date = (TextView) findViewById(R.id.tv_release_date);
         
         btn_favorite_toggle = (ToggleButton) findViewById(R.id.btn_favorite_toggle);
+        
+        gv_trailer = (GridView) findViewById(R.id.gv_videos);
+        
+        
         
 
         Intent intent = getIntent();
@@ -71,7 +91,14 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             btn_favorite_toggle.setChecked(false);
         }
-        dumpDB();
+        
+        // TODO: delete debug
+        //dumpDB();
+        
+        Log.d(TAG, "DetailActivity.onCreate tmdbID-> " + tmdbID);
+        startQuery(tmdbID);
+        
+        
 
         Picasso.with(this)
                 .load(NetworkUtils.buildQueryPoster(posterpath))
@@ -94,6 +121,9 @@ public class DetailActivity extends AppCompatActivity {
                 //dumpDB();
             }
         });
+        
+        //gv_trailer.setAdapter(new TrailersAdapter(this, ));
+        
     }
 
     //----------------------------------------------------------------------------------------------
@@ -119,15 +149,25 @@ public class DetailActivity extends AppCompatActivity {
     //----------------------------------------------------------------------------------------------
     private boolean checkFavorite(Movie movie) {
         String tmdbID = movie.getId();
+        boolean movie_is_favorite = false;
+        
     
         Uri uri = MovieContract.MovieEntry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(tmdbID).build();
     
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            return true;
+        try {
+            if (cursor.moveToFirst()) {
+                cursor.close();
+                movie_is_favorite = true;
+            } else {
+                movie_is_favorite = false;
+            }
+        } finally {
+            cursor.close();
         }
-        return false;
+        
+        return movie_is_favorite;
     }
     //----------------------------------------------------------------------------------------------
     private void dumpDB() {
@@ -150,7 +190,71 @@ public class DetailActivity extends AppCompatActivity {
     }
     //----------------------------------------------------------------------------------------------
     
+    private class LoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Trailer>> {
+        //------------------------------------------------------------------------------------------
+        @Override
+        public Loader<ArrayList<Trailer>> onCreateLoader(int id, final Bundle args) {
+            if(args == null) {
+                return null;
+            }
+            String movieId = args.getString("movieId");
+            
+            
+            TMDBTrailerLoader loader = new TMDBTrailerLoader(DetailActivity.this, movieId);
+            
+            return loader;
+        }
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onLoadFinished(Loader<ArrayList<Trailer>> loader, ArrayList<Trailer> data) {
+            if (data == null) {
+            } else {
+//                for(Trailer t: data){
+//                    Log.d("PSX", "DetailActivity TrailerLoader onLoadFinished data.name, data.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
+//                }
+                processResponse(data);
+            }
+        }
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onLoaderReset(Loader<ArrayList<Trailer>> loader) {
+        
+        }
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+    }
     
+    //----------------------------------------------------------------------------------------------
+    private void startQuery(String movieId){
+        
+        Log.d("PSX", "DetailActivity startQuery movieId-> " + movieId);
+        
+            
+            //setAdapter();
+//            pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
+//            pb_loading_indicator.setVisibility(View.VISIBLE);
+        // TODO:  put checkInternetConnection to NetworkUtils class
+        //checkInternetConnection();
+        Bundle loadBundle = new Bundle();
+        loadBundle.putString("movieId", movieId);
+        
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<ArrayList<Trailer>> movieLoader = loaderManager.getLoader(TRAILER_LOADER_ID);
+        loaderManager.restartLoader(TRAILER_LOADER_ID, loadBundle, loaderCallbacks);
+
+    }
+    //----------------------------------------------------------------------------------------------
+    public void processResponse(ArrayList<Trailer> response) {
+        //gv_trailer.setAdapter(new TrailersAdapter(this, response));
+        gv_trailer = (GridView) findViewById(R.id.gv_videos);
+        gv_trailer.setAdapter(new TrailersAdapter(this, response));
+        //TrailersAdapter ta = new TrailersAdapter(this, response);
+        
+        for(Trailer t: response){
+            Log.d("PSX", "DetailActivity processResponse response.name, response.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
+        }
+    }
+    //----------------------------------------------------------------------------------------------
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
