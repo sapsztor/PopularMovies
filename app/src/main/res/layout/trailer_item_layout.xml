@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+
+    <ImageView
+        android:id="@+id/iv_trailer_thumb"
+        android:layout_width="@dimen/trailer_thumb_width"
+        android:layout_height="@dimen/trailer_thumb_height"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/thumb_image_margins"
+
+        />
+
+    <!--android:src="@drawable/favorite_button_checked"-->
+    <!---->
+    <ImageView
+        app:srcCompat="@drawable/arrow_right_drop_circle_outline"
+        android:layout_width="@dimen/trailer_thumb_play_button_size"
+        android:layout_height="@dimen/trailer_thumb_play_button_size"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/thumb_image_margins"
+        android:alpha="0.6"
+
+        />
+
+</FrameLayout>

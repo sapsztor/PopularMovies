@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="trailer_grid_cols">3</integer>
+    <dimen name="trailer_thumb_play_button_size">80dp</dimen>
+    <dimen name="trailer_thumb_width">200dp</dimen>
+    <dimen name="trailer_thumb_height">100dp</dimen>
+</resources>

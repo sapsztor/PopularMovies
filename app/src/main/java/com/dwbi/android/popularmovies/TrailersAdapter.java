@@ -1,12 +1,17 @@
 package com.dwbi.android.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.dwbi.android.popularmovies.model.Trailer;
 import com.squareup.picasso.Picasso;
@@ -53,26 +58,89 @@ public class TrailersAdapter extends BaseAdapter {
     }
     
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+    
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View gridCell;
+        //int targetWidth = (int) parent.getResources().getDimension(R.dimen.trailer_thumb_width);
+        //int  targetHeigth = (int) parent.getResources().getDimension(R.dimen.trailer_thumb_width);
         
         if(convertView == null){
-            imageView = new ImageView(mContext);
-            //imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8,8,8,8);
+            
+            gridCell = inflater.inflate(R.layout.trailer_item_layout, null);
+            ImageView trailerThumb = (ImageView) gridCell.findViewById(R.id.iv_trailer_thumb);
+    
+            trailerThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            trailerThumb.setPadding(8,8,8,8);
+            trailerThumb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickCallback(trailerData.get(position).getKey());
+                }
+            });
+            
+            
+            Picasso.with(mContext)
+                .load("https://img.youtube.com/vi/" + trailerData.get(position).getKey() + "/0.jpg")
+                //.centerCrop()
+                //.centerInside()
+                //.resize(150,150)
+                .into(trailerThumb);
+            
         } else {
-            imageView = (ImageView) convertView;
+            gridCell = (View) convertView;
         }
-        Picasso.with(mContext)
-            .load("https://img.youtube.com/vi/" + trailerData.get(position).getKey() + "/0.jpg")
-            //.centerCrop()
-            .centerInside()
-            .resize(150,150)
-            .into(imageView);
-        return imageView;
-        
+        return gridCell;
+
     }
     
+
+
     
+    private void onClickCallback(String videoId) {
+        if (checkYoutubePlayer()) {
+            
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoId));
+                mContext.startActivity(intent);
+            } catch (ActivityNotFoundException ex) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=" + videoId));
+                mContext.startActivity(intent);
+            }
+        } else {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=" + videoId));
+                mContext.startActivity(intent);
+                
+            } catch (ActivityNotFoundException ex) {
+                Toast.makeText(mContext, "No videoplayer app", Toast.LENGTH_SHORT).show();
+            }
+            
+        }
+    }
+    
+    /*
+    protected boolean isAppInstalled(String packageName) {
+        Intent mIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+        if (mIntent != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+     */
+    private boolean checkYoutubePlayer() {
+        PackageManager pm = mContext.getPackageManager();
+        boolean installed = false;
+        try {
+            pm.getPackageInfo("com.google.android.youtube", PackageManager.GET_ACTIVITIES);
+            installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            installed = false;
+        }
+        return installed;
+    }
 }

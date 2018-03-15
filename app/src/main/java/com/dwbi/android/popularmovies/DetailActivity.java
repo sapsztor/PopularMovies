@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
+//import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -20,7 +20,6 @@ import android.widget.ToggleButton;
 import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.model.MovieContract;
 import com.dwbi.android.popularmovies.model.Trailer;
-import com.dwbi.android.popularmovies.utilities.FavoriteQueryLoader;
 import com.dwbi.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -34,13 +33,15 @@ public class DetailActivity extends AppCompatActivity {
     
     private LoaderManager.LoaderCallbacks<ArrayList<Trailer>> loaderCallbacks = new LoaderCallback();
     
-    GridView gv_trailer;
+    //GridView gv_trailer;
+    ExpandableGridView gv_trailer;
     
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         //setContentView(R.layout.activity_detail);
-        setContentView(R.layout.activity_detail3);
+        //setContentView(R.layout.activity_detail3);
+        setContentView(R.layout.activity_detail);
 
         TextView tv_title;
         ImageView iv_poster;
@@ -66,7 +67,8 @@ public class DetailActivity extends AppCompatActivity {
         
         btn_favorite_toggle = (ToggleButton) findViewById(R.id.btn_favorite_toggle);
         
-        gv_trailer = (GridView) findViewById(R.id.gv_videos);
+        //gv_trailer = (GridView) findViewById(R.id.gv_videos);
+        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_videos);
         
         
         
@@ -245,9 +247,10 @@ public class DetailActivity extends AppCompatActivity {
     }
     //----------------------------------------------------------------------------------------------
     public void processResponse(ArrayList<Trailer> response) {
-        //gv_trailer.setAdapter(new TrailersAdapter(this, response));
-        gv_trailer = (GridView) findViewById(R.id.gv_videos);
+        //gv_trailer = (GridView) findViewById(R.id.gv_videos);
+        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_videos);
         gv_trailer.setAdapter(new TrailersAdapter(this, response));
+        gv_trailer.setExpanded(true);
         //TrailersAdapter ta = new TrailersAdapter(this, response);
         
         for(Trailer t: response){

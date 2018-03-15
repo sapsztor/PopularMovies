@@ -17,6 +17,7 @@ import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
 
 import android.util.AttributeSet;
@@ -154,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // for using vector drawable favorite buttons
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_main_scroll);
         
         rv_video_thumb =  findViewById(R.id.rv_video_thumb);
