@@ -175,16 +175,19 @@
             <!--android:layout_height="match_parent">-->
 
         <com.dwbi.android.popularmovies.ExpandableGridView
-                android:id="@+id/gv_videos"
+                android:id="@+id/gv_trailers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:numColumns="@integer/trailer_grid_cols"
-
             >
-
-
-                <!--</RelativeLayout>-->
         </com.dwbi.android.popularmovies.ExpandableGridView>
+
+        <com.dwbi.android.popularmovies.ExpandableGridView
+                android:id="@+id/gv_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:numColumns="1" >
+            </com.dwbi.android.popularmovies.ExpandableGridView>
 
         </LinearLayout>
         <View

@@ -168,16 +168,19 @@
             <!--android:src="@android:drawable/ic_media_play"/>-->
             <!--https://stackoverflow.com/questions/4523609/grid-of-images-inside-scrollview/4536955#4536955-->
 
+            <!--android:numColumns="3"-->
+            <!--android:numColumns="@dimen/trailer_grid_cols">-->
+            <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
 
             <com.dwbi.android.popularmovies.ExpandableGridView
-                android:id="@+id/gv_videos"
+                android:id="@+id/gv_trailers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numColumns="3">
-                <!--<RelativeLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent">-->
+                android:numColumns="@integer/trailer_grid_cols"
 
+                >
 
 
                 <!--</RelativeLayout>-->
@@ -188,6 +191,7 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/colorPrimaryDark">
+
         </View>
 
     </android.support.constraint.ConstraintLayout>

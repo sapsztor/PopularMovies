@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         }
 
         if (pageNum == 1){
-            Log.d("PSX", "MainActivity.processResponse.pageNum-> " + pageNum);
+            Log.d("PSX", "MainActivity.trailerLoaderResponse.pageNum-> " + pageNum);
             movieData.clear();
             movieData.addAll(tmpData);
 
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
 
 
         } else {
-            Log.d("PSX", "MainActivity.processResponse.pageNum append-> " + pageNum);
+            Log.d("PSX", "MainActivity.trailerLoaderResponse.pageNum append-> " + pageNum);
             int curSize = adapter.getItemCount();
             adapter.appendData(response);
         }
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
         pb_loading_indicator.setVisibility(View.INVISIBLE);
 
-        logData("processResponse");
+        logData("trailerLoaderResponse");
 
     }
     //----------------------------------------------------------------------------------------------

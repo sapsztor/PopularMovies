@@ -5,6 +5,7 @@ package com.dwbi.android.popularmovies.utilities;
  */
 
 import com.dwbi.android.popularmovies.model.Movies;
+import com.dwbi.android.popularmovies.model.Reviews;
 import com.dwbi.android.popularmovies.model.Trailers;
 
 import retrofit2.Call;
@@ -23,6 +24,12 @@ public interface TMDBAPI {
     
     @GET("3/movie/{id}/videos")
     Call<Trailers> getTrailers(
+        @Path("id") String id,
+        @Query("api_key") String api_key);
+    
+    
+    @GET("3/movie/{id}/reviews")
+    Call<Reviews> getReviews(
         @Path("id") String id,
         @Query("api_key") String api_key);
 }

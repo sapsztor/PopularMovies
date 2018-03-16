@@ -19,6 +19,7 @@ import android.widget.ToggleButton;
 
 import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.model.MovieContract;
+import com.dwbi.android.popularmovies.model.Review;
 import com.dwbi.android.popularmovies.model.Trailer;
 import com.dwbi.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -30,11 +31,14 @@ public class DetailActivity extends AppCompatActivity {
     private static final String TAG = "PSX";
     
     public static final int TRAILER_LOADER_ID = 3;
+    public static final int REVIEW_LOADER_ID = 4;
     
-    private LoaderManager.LoaderCallbacks<ArrayList<Trailer>> loaderCallbacks = new LoaderCallback();
+    private LoaderManager.LoaderCallbacks<ArrayList<Trailer>> trailersLoaderCallback = new TrailersLoaderCallback();
+    private LoaderManager.LoaderCallbacks<ArrayList<Review>> reviewsLoaderCallbacks = new ReviewsLoaderCallback();
     
     //GridView gv_trailer;
     ExpandableGridView gv_trailer;
+    ExpandableGridView gv_review;
     
     @Override
     protected void onCreate(Bundle bundle) {
@@ -68,7 +72,9 @@ public class DetailActivity extends AppCompatActivity {
         btn_favorite_toggle = (ToggleButton) findViewById(R.id.btn_favorite_toggle);
         
         //gv_trailer = (GridView) findViewById(R.id.gv_videos);
-        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_videos);
+        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_trailers);
+        gv_review = (ExpandableGridView) findViewById(R.id.gv_reviews);
+        
         
         
         
@@ -192,7 +198,7 @@ public class DetailActivity extends AppCompatActivity {
     }
     //----------------------------------------------------------------------------------------------
     
-    private class LoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Trailer>> {
+    private class TrailersLoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Trailer>> {
         //------------------------------------------------------------------------------------------
         @Override
         public Loader<ArrayList<Trailer>> onCreateLoader(int id, final Bundle args) {
@@ -214,12 +220,46 @@ public class DetailActivity extends AppCompatActivity {
 //                for(Trailer t: data){
 //                    Log.d("PSX", "DetailActivity TrailerLoader onLoadFinished data.name, data.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
 //                }
-                processResponse(data);
+                trailerLoaderResponse(data);
             }
         }
         //------------------------------------------------------------------------------------------
         @Override
         public void onLoaderReset(Loader<ArrayList<Trailer>> loader) {
+        
+        }
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+    }
+    
+    private class ReviewsLoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Review>> {
+        //------------------------------------------------------------------------------------------
+        @Override
+        public Loader<ArrayList<Review>> onCreateLoader(int id, final Bundle args) {
+            if(args == null) {
+                return null;
+            }
+            String movieId = args.getString("movieId");
+            
+            
+            TMDBReviewLoader loader = new TMDBReviewLoader(DetailActivity.this, movieId);
+            
+            return loader;
+        }
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onLoadFinished(Loader<ArrayList<Review>> loader, ArrayList<Review> data) {
+            if (data == null) {
+            } else {
+//                for(Trailer t: data){
+//                    Log.d("PSX", "DetailActivity TrailerLoader onLoadFinished data.name, data.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
+//                }
+                reviewLoaderResponse(data);
+            }
+        }
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onLoaderReset(Loader<ArrayList<Review>> loader) {
         
         }
         //------------------------------------------------------------------------------------------
@@ -242,23 +282,35 @@ public class DetailActivity extends AppCompatActivity {
         
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<ArrayList<Trailer>> movieLoader = loaderManager.getLoader(TRAILER_LOADER_ID);
-        loaderManager.restartLoader(TRAILER_LOADER_ID, loadBundle, loaderCallbacks);
+        loaderManager.restartLoader(TRAILER_LOADER_ID, loadBundle, trailersLoaderCallback);
+
+        // PSX
+        Loader<ArrayList<Review>> reviewLoader = loaderManager.getLoader(REVIEW_LOADER_ID);
+        loaderManager.restartLoader(REVIEW_LOADER_ID, loadBundle, reviewsLoaderCallbacks);
 
     }
     //----------------------------------------------------------------------------------------------
-    public void processResponse(ArrayList<Trailer> response) {
+    public void trailerLoaderResponse(ArrayList<Trailer> response) {
         //gv_trailer = (GridView) findViewById(R.id.gv_videos);
-        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_videos);
+        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_trailers);
         gv_trailer.setAdapter(new TrailersAdapter(this, response));
         gv_trailer.setExpanded(true);
-        //TrailersAdapter ta = new TrailersAdapter(this, response);
         
         for(Trailer t: response){
-            Log.d("PSX", "DetailActivity processResponse response.name, response.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
+            Log.d("PSX", "DetailActivity trailerLoaderResponse response.name, response.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
         }
     }
     //----------------------------------------------------------------------------------------------
-    
+    public void reviewLoaderResponse(ArrayList<Review> response) {
+        gv_review = (ExpandableGridView) findViewById(R.id.gv_reviews);
+        gv_review.setAdapter(new ReviewsAdapter(this, response));
+        gv_review.setExpanded(true);
+        
+        for(Review r: response){
+            Log.d("PSX", "DetailActivity reviewLoaderResponse response.name, response.key-> "+ r.getId() + ", " + r.getAuthor() + ", " + r.getContent() );
+        }
+    }
+    //----------------------------------------------------------------------------------------------
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
