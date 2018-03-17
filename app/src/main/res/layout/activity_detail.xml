@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_poster"
             app:layout_constraintTop_toBottomOf="@+id/tv_release_date_title"
-            tools:text="2015.05.31" />
+            tools:text="2015" />
 
         <TextView
             android:id="@+id/tv_vote_average_title"
@@ -136,10 +136,8 @@
             <TextView
                 android:id="@+id/tv_overview_title"
                 android:layout_width="match_parent"
-                android:layout_height="17dp"
-                android:layout_marginEnd="8dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:text="@string/overview_title"
                 tools:text="@string/overview_title" />
 
@@ -156,7 +154,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="17dp"
+                android:layout_height="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -181,6 +179,15 @@
                 android:numColumns="@integer/trailer_grid_cols"
             >
         </com.dwbi.android.popularmovies.ExpandableGridView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/reviews_title"
+            tools:text="@string/reviews_title" />
+
 
         <com.dwbi.android.popularmovies.ExpandableGridView
                 android:id="@+id/gv_reviews"

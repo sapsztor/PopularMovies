@@ -60,16 +60,17 @@ public class ReviewsAdapter extends BaseAdapter {
             
             gridCell = inflater.inflate(R.layout.review_item_layout, null);
             TextView reviewContent = (TextView) gridCell.findViewById(R.id.tv_review_content);
-            reviewContent.setText(reviewData.get(position).getAuthor() + "\n\n" + reviewData.get(position).getContent() + "\n\n");
-    
-//            reviewContent.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onClickCallback(reviewData.get(position).getContent());
-//                }
-//            });
-        
-
+            TextView reviewAuthor = (TextView) gridCell.findViewById(R.id.tv_review_author);
+            
+            reviewContent.setText(reviewData.get(position).getContent() + "\n\n");
+            reviewAuthor.setText(reviewData.get(position).getAuthor());
+            if(position % 2 == 0){
+                reviewContent.setBackgroundColor(mContext.getResources().getColor(R.color.reviewBackgroudColor1));
+                reviewAuthor.setBackgroundColor(mContext.getResources().getColor(R.color.reviewBackgroudColor1));
+            } else {
+                reviewContent.setBackgroundColor(mContext.getResources().getColor(R.color.reviewBackgroudColor2));
+                reviewAuthor.setBackgroundColor(mContext.getResources().getColor(R.color.reviewBackgroudColor2));
+            }
         
         } else {
             gridCell = (View) convertView;
