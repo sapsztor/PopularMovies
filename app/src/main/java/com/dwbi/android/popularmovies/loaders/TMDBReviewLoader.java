@@ -73,8 +73,8 @@ public class TMDBReviewLoader extends AsyncTaskLoader<ArrayList<Review>>{
         
         try {
             Response<Reviews> response = call.execute();
-            Reviews trailers = response.body();
-            return (ArrayList<Review>) trailers.getReviews();
+            Reviews reviews = response.body();
+            return (ArrayList<Review>) reviews.getReviews();
         } catch (IOException e) {
             Log.d("PSX", "e-> " + e);
         }

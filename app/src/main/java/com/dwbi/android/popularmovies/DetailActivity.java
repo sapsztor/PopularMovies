@@ -287,20 +287,12 @@ public class DetailActivity extends AppCompatActivity {
         gv_trailer = (ExpandableGridView) findViewById(R.id.gv_trailers);
         gv_trailer.setAdapter(new TrailersAdapter(this, response));
         gv_trailer.setExpanded(true);
-        
-        for(Trailer t: response){
-            Log.d("PSX", "DetailActivity trailerLoaderResponse response.name, response.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
-        }
     }
     //----------------------------------------------------------------------------------------------
     public void reviewLoaderResponse(ArrayList<Review> response) {
         gv_review = (ExpandableGridView) findViewById(R.id.gv_reviews);
         gv_review.setAdapter(new ReviewsAdapter(this, response));
         gv_review.setExpanded(true);
-        
-        for(Review r: response){
-            Log.d("PSX", "DetailActivity reviewLoaderResponse response.name, response.key-> "+ r.getId() + ", " + r.getAuthor() + ", " + r.getContent() );
-        }
     }
     //----------------------------------------------------------------------------------------------
     @Override

@@ -5,12 +5,14 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 
+import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.model.Trailer;
 import com.dwbi.android.popularmovies.model.Trailers;
 import com.dwbi.android.popularmovies.utilities.TMDBAPI;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -36,6 +38,19 @@ public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
         this.id = id;
     }
     
+    private ArrayList<Trailer> filterTrailer(ArrayList<Trailer> data, String typetoKeep){
+        ListIterator<Trailer> iter = data.listIterator();
+        
+        while (iter.hasNext()) {
+            Trailer t = data.get(iter.nextIndex());
+            
+            if( !iter.next().getType().contains(typetoKeep) ){
+                iter.remove();
+            }
+        }
+        return data;
+    }
+    
     @Override
     protected void onStartLoading() {
         if (result != null) {
@@ -50,7 +65,12 @@ public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
         if (isReset()) {
             return;
         }
-        result = data;
+        
+        //result = data;
+        
+        result = filterTrailer(data, "Trailer");
+        
+        
         if(isStarted()){
             super.deliverResult(data);
         }
