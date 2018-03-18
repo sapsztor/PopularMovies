@@ -11,7 +11,6 @@
     <!--<string name="menu_label_query_more">Query more</string>-->
     <string name="detail_activity_label">Movie details</string>
     <string name="vote_average_title">Vote Average</string>
-    <string name="vote_average">7.3</string>
     <string name="release_date_title">Release Date</string>
     <!--<string name="release_date">2016.04.19</string>-->
     <string name="overview_title">Plot</string>
@@ -19,5 +18,7 @@
     <string name="extra_selectedmovie">selectedmovie</string>
     <string name="trailers_title">Trailers</string>
     <string name="reviews_title">Reviews</string>
+    <string name="play_trailer_button_contentdescription">Play trailer</string>
+    <string name="trailer_thumbnail_contentdescription">Trailer thumbnail image</string>
 
 </resources>

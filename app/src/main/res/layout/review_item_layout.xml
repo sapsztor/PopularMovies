@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
         <TextView
             android:id="@+id/tv_review_author"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/inside_grid_label_padding"
 
-            android:textStyle="normal|bold" />
+            android:textStyle="normal|bold"
+            tools:ignore="RtlSymmetry" />
         <TextView
             android:id="@+id/tv_review_content"
             android:layout_width="match_parent"

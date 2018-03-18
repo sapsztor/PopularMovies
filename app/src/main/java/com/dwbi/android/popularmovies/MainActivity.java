@@ -41,7 +41,7 @@ import java.util.ArrayList;
 @SuppressWarnings("UnnecessaryReturnStatement")
 public class MainActivity extends AppCompatActivity implements  MoviesAdapter.AdapterStatusListener {
 
-    public static final int DETAIL_ACTIVITY_RESPONSE = 12345;
+    private static final int DETAIL_ACTIVITY_RESPONSE = 12345;
 
 
 
@@ -55,19 +55,15 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
 
 
     private int pageNum = 1;
-
-    // save recyclerview state  https://stackoverflow.com/questions/28236390/recyclerview-store-restore-state-between-activities
-    private final String KEY_RECYCLER_STATE = "recycler_state";
+    
     private static Parcelable recyclerViewState;
-
-    private EndlessRecyclerViewScrollListener scrollListener;
-
+    
     //--------------------------------------------------------------------------
     //http://www.androiddesignpatterns.com/2012/08/implementing-loaders.html
-    public static final int MOVIE_LOADER_ID = 1;
+    private static final int MOVIE_LOADER_ID = 1;
     public static final int FAVORITE_LOADER_ID = 2;
     
-    private LoaderManager.LoaderCallbacks<ArrayList<Movie>> loaderCallbacks = new LoaderCallback();
+    private final LoaderManager.LoaderCallbacks<ArrayList<Movie>> loaderCallbacks = new LoaderCallback();
     private class LoaderCallback implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
         //------------------------------------------------------------------------------------------
         @Override
@@ -77,16 +73,13 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
             }
             String sortBy = args.getString("sortBy");
             String pageNum = args.getString("pageNum");
-
-            TMDBQueryLoader loader = new TMDBQueryLoader(MainActivity.this, sortBy, pageNum);
-
-            return loader;
+    
+            return new TMDBQueryLoader(MainActivity.this, sortBy, pageNum);
         }
         //------------------------------------------------------------------------------------------
         @Override
         public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-            if (data == null) {
-            } else {
+            if (data != null) {
                 processResponse(data);
             }
         }
@@ -111,12 +104,12 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         
 
         setAdapter();
-
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+    
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, final RecyclerView view) {
                 queryMore();
-                Log.d("PSX", "EndlessRecyclerViewScrollListener.onLoadMore page-> " + page + " totalItemsCount-> " + totalItemsCount );
+                Log.d("PSX", "EndlessRecyclerViewScrollListener.onLoadMore page-> " + page + " totalItemsCount-> " + totalItemsCount);
             }
         };
         rv_video_thumb.addOnScrollListener(scrollListener);
@@ -158,18 +151,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     }
     //----------------------------------------------------------------------------------------------
     
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-    
     //----------------------------------------------------------------------------------------------
     
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
     
     //----------------------------------------------------------------------------------------------
     @Override
@@ -177,13 +160,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         super.onSaveInstanceState(savedInstanceState);
 
         recyclerViewState = rv_video_thumb.getLayoutManager().onSaveInstanceState();
+        String KEY_RECYCLER_STATE = "recycler_state";
         savedInstanceState.putParcelable(KEY_RECYCLER_STATE, recyclerViewState);
-
-    }
-    //----------------------------------------------------------------------------------------------
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
 
     }
     
@@ -210,7 +188,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     private void checkInternetConnection(){
         boolean isOnline;
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        
+        NetworkInfo netInfo = cm != null ? cm.getActiveNetworkInfo() : null;
         isOnline = (netInfo != null && netInfo.isConnectedOrConnecting());
     
         if(isOnline) {
@@ -262,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     
 
             LoaderManager loaderManager = getSupportLoaderManager();
-            Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LOADER_ID);
+            //Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LOADER_ID);
             loaderManager.restartLoader(MOVIE_LOADER_ID, loadBundle, loaderCallbacks);
         }
     }
@@ -277,14 +256,9 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         pageNum++;
         Log.d("PSX", "queryMore pageNum-> " + pageNum);
         startQuery(getQueryPreference(), pageNum);
-
-        if (pageNum > 1) {
-            int scrollPosition = ((this.pageNum - 1) * 20) - 4;
-        }
-
     }
     //----------------------------------------------------------------------------------------------
-    public void processResponse(ArrayList<Movie> response) {
+    private void processResponse(ArrayList<Movie> response) {
         
         ArrayList<Movie> tmpData;
         if (response == null) {
@@ -303,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
 
         } else {
             Log.d("PSX", "MainActivity.trailerLoaderResponse.pageNum append-> " + pageNum);
-            int curSize = adapter.getItemCount();
+            //int curSize = adapter.getItemCount();
             adapter.appendData(response);
         }
 
@@ -318,16 +292,9 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
 
         pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
         pb_loading_indicator.setVisibility(View.INVISIBLE);
-
-        logData("trailerLoaderResponse");
-
     }
     //----------------------------------------------------------------------------------------------
-    void logData(String from){
-        Log.d("PSX", from + ": movieData.count -> " + movieData.size());
-        Log.d("PSX", from + ": adapter.getItemCount() -> " + adapter.getItemCount());
-    }
-    //----------------------------------------------------------------------------------------------
+
     private void setQueryPreference(String sortOrder) {
         SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
         String text = prefs.getString(getString(R.string.preferred_sort_order), null);

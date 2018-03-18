@@ -24,11 +24,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TMDBReviewLoader extends AsyncTaskLoader<ArrayList<Review>>{
     private static final String API_KEY = com.dwbi.android.popularmovies.BuildConfig.API_KEY;
     
-    private static String BASE_URL = "http://api.themoviedb.org/";
+    @SuppressWarnings("FieldCanBeLocal")
+    private static final String BASE_URL = "http://api.themoviedb.org/";
     
-    String id;
+    @SuppressWarnings("CanBeFinal")
+    private String id;
     
-    ArrayList<Review> result = null;
+    private ArrayList<Review> result = null;
     
     
     public TMDBReviewLoader(Context context, String id) {
@@ -74,6 +76,7 @@ public class TMDBReviewLoader extends AsyncTaskLoader<ArrayList<Review>>{
         try {
             Response<Reviews> response = call.execute();
             Reviews reviews = response.body();
+            //noinspection ConstantConditions
             return (ArrayList<Review>) reviews.getReviews();
         } catch (IOException e) {
             Log.d("PSX", "e-> " + e);

@@ -13,6 +13,7 @@
         android:layout_height="@dimen/trailer_thumb_height"
         android:layout_gravity="center"
         android:layout_margin="@dimen/thumb_image_margins"
+        android:contentDescription="@string/trailer_thumbnail_contentdescription"
 
         />
 
@@ -25,6 +26,7 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/thumb_image_margins"
         android:alpha="0.6"
+        android:contentDescription="@string/play_trailer_button_contentdescription"
 
         />
 

@@ -49,6 +49,7 @@ public class Movie implements Parcelable {
         this.release_date = in.readString();
     }
 
+    @SuppressWarnings("unused")
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
         public Movie createFromParcel(Parcel in){
             return new Movie(in);

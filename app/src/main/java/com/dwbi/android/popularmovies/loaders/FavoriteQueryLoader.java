@@ -18,8 +18,8 @@ import static com.dwbi.android.popularmovies.MainActivity.FAVORITE_LOADER_ID;
 
 public class FavoriteQueryLoader implements LoaderManager.LoaderCallbacks<Cursor> {
     
-    private Context context;
-    private FavoriteMoviesAdapter adapter;
+    private final Context context;
+    private final FavoriteMoviesAdapter adapter;
     
     public FavoriteQueryLoader(Context context, FavoriteMoviesAdapter adapter) {
         this.context = context;

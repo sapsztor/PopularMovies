@@ -24,7 +24,7 @@ import com.dwbi.android.popularmovies.R;
 
 public class FavoriteMoviesAdapter extends RecyclerView.Adapter<FavoriteMoviesAdapter.MovieViewHolder>  {
     private Cursor cursor;
-    private Context context;
+    private final Context context;
 
     
     
@@ -81,7 +81,7 @@ public class FavoriteMoviesAdapter extends RecyclerView.Adapter<FavoriteMoviesAd
         ImageView listItemPosterView;
         
         private Movie getCurrentMovie(){
-            Movie tmpMovie = new Movie(
+            return new Movie(
                 cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)),
                 cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE)),
                 cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_POSTERPATH)),
@@ -89,7 +89,6 @@ public class FavoriteMoviesAdapter extends RecyclerView.Adapter<FavoriteMoviesAd
                 cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE)),
                 cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE))
             );
-            return tmpMovie;
         }
         
         @Override

@@ -1,5 +1,6 @@
 package com.dwbi.android.popularmovies.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -27,14 +28,15 @@ public class TrailersAdapter extends BaseAdapter {
     
     private static final String TAG = "PSX";
     
-    private Context mContext;
+    private final Context mContext;
     private ArrayList<Trailer> trailerData = new ArrayList<>();
     
+    @SuppressWarnings("unused")
     public TrailersAdapter(Context context) {
         //
         this.mContext = context;
     }
-    public TrailersAdapter(Context context, ArrayList data) {
+    public TrailersAdapter(Context context, ArrayList<Trailer> data) {
         //
         this.mContext = context;
         this.trailerData = data;
@@ -58,6 +60,7 @@ public class TrailersAdapter extends BaseAdapter {
         return 0;
     }
     
+    @SuppressLint("InflateParams")
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
     
@@ -67,12 +70,15 @@ public class TrailersAdapter extends BaseAdapter {
         //int  targetHeigth = (int) parent.getResources().getDimension(R.dimen.trailer_thumb_width);
         
         if(convertView == null){
-            
+    
+            //noinspection ConstantConditions
             gridCell = inflater.inflate(R.layout.trailer_item_layout, null);
-            ImageView trailerThumb = (ImageView) gridCell.findViewById(R.id.iv_trailer_thumb);
+            ImageView trailerThumb = gridCell.findViewById(R.id.iv_trailer_thumb);
     
             trailerThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
             trailerThumb.setPadding(8,8,8,8);
+            trailerThumb.setContentDescription(trailerData.get(position).getType());
+            
             trailerThumb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -89,7 +95,7 @@ public class TrailersAdapter extends BaseAdapter {
                 .into(trailerThumb);
             
         } else {
-            gridCell = (View) convertView;
+            gridCell = convertView;
         }
         return gridCell;
 
@@ -125,7 +131,7 @@ public class TrailersAdapter extends BaseAdapter {
 
     private boolean checkYoutubePlayer() {
         PackageManager pm = mContext.getPackageManager();
-        boolean installed = false;
+        boolean installed;
         try {
             pm.getPackageInfo("com.google.android.youtube", PackageManager.GET_ACTIVITIES);
             installed = true;

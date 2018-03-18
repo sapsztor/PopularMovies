@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public class Trailers {
+    @SuppressWarnings("CanBeFinal")
     @SerializedName("results")
     private List<Trailer> trailers = new ArrayList<>();
     

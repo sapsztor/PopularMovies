@@ -1,5 +1,6 @@
 package com.dwbi.android.popularmovies.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,17 +21,17 @@ import java.util.ArrayList;
 public class ReviewsAdapter extends BaseAdapter {
     private static final String TAG = "PSX";
     
-    private Context mContext;
+    private final Context mContext;
     private ArrayList<Review> reviewData = new ArrayList<>();
     
+    @SuppressWarnings("unused")
     public ReviewsAdapter(Context context) {
-        //
         this.mContext = context;
     }
-    public ReviewsAdapter(Context context, ArrayList data) {
+    public ReviewsAdapter(Context context, ArrayList<Review> data) {
         //
         this.mContext = context;
-        this.reviewData = data;
+        this.reviewData =  data;
         Log.d(TAG, "ReviewsAdapter data.size-> " + data.size());
         
     }
@@ -51,6 +52,7 @@ public class ReviewsAdapter extends BaseAdapter {
         return 0;
     }
     
+    @SuppressLint({"InflateParams", "SetTextI18n"})
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         
@@ -58,10 +60,11 @@ public class ReviewsAdapter extends BaseAdapter {
         View gridCell;
         
         if(convertView == null){
-            
-            gridCell = inflater.inflate(R.layout.review_item_layout, null);
-            TextView reviewContent = (TextView) gridCell.findViewById(R.id.tv_review_content);
-            TextView reviewAuthor = (TextView) gridCell.findViewById(R.id.tv_review_author);
+    
+            //noinspection ConstantConditions
+            gridCell = inflater.inflate(R.layout.review_item_layout, null) ;
+            TextView reviewContent = gridCell.findViewById(R.id.tv_review_content);
+            TextView reviewAuthor = gridCell.findViewById(R.id.tv_review_author);
             
             reviewContent.setText(reviewData.get(position).getContent() + "\n\n");
             reviewAuthor.setText(reviewData.get(position).getAuthor());
@@ -74,7 +77,7 @@ public class ReviewsAdapter extends BaseAdapter {
             }
         
         } else {
-            gridCell = (View) convertView;
+            gridCell = convertView;
         }
         return gridCell;
         

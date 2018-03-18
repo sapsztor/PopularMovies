@@ -6,7 +6,6 @@
     <dimen name="thumb_image_margins">16dp</dimen>
     <integer name="trailer_grid_cols">3</integer>
 
-    <dimen name="detail_layout_start_margin">8dp</dimen>
     <dimen name="inside_grid_label_padding">8dp</dimen>
     <dimen name="inside_grid_text_padding">16dp</dimen>
 

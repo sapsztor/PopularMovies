@@ -47,12 +47,7 @@ import com.squareup.picasso.Picasso;
 
     //--------------------------------------------------------------------------
     public void appendData(ArrayList<Movie> data) {
-        //notifyItemRangeChanged(int positionStart, int itemCount)
-        int positionStart = movieData.size() - 1;
-        int itemCount = data.size();
         this.movieData.addAll(data);
-
-        //notifyItemRangeChanged(positionStart, itemCount);
         notifyDataSetChanged();
     }
     //--------------------------------------------------------------------------
@@ -62,6 +57,7 @@ import com.squareup.picasso.Picasso;
     }
     //--------------------------------------------------------------------------
 
+    @SuppressWarnings("unused")
     public void clearData() {
         movieData.clear();
     }
@@ -90,6 +86,7 @@ import com.squareup.picasso.Picasso;
     @Override
     public void onViewAttachedToWindow(MovieViewHolder holder) {
         super.onViewAttachedToWindow(holder);
+        @SuppressWarnings("unused")
         int position = holder.getAdapterPosition();
     }
     //--------------------------------------------------------------------------

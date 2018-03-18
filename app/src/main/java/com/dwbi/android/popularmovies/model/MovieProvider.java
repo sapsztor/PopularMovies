@@ -16,14 +16,14 @@ import android.support.annotation.Nullable;
 
 public class MovieProvider extends ContentProvider {
 
-    public static final int FAVORITES = 100;
-    public static final int FAVORITE_WITH_ID = 101;
+    private static final int FAVORITES = 100;
+    private static final int FAVORITE_WITH_ID = 101;
 
     private MovieDbHelper dbHelper;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
-    public static UriMatcher buildUriMatcher(){
+    private static UriMatcher buildUriMatcher(){
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
 
@@ -60,7 +60,7 @@ public class MovieProvider extends ContentProvider {
             case FAVORITE_WITH_ID: {
                 String paramMovieId = uri.getLastPathSegment();
                 try {
-                    int checkMovieId = Integer.parseInt(paramMovieId);
+                    @SuppressWarnings("unused") int checkMovieId = Integer.parseInt(paramMovieId);
                 } catch (NumberFormatException e) {
                     System.out.println("Not valid TMDB movie ID: " + e);
                 }
@@ -79,6 +79,7 @@ public class MovieProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        //noinspection ConstantConditions
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -91,7 +92,7 @@ public class MovieProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int match = uriMatcher.match(uri);
         Uri returnUri;
@@ -109,6 +110,7 @@ public class MovieProvider extends ContentProvider {
                 db.close();
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        //noinspection ConstantConditions
         getContext().getContentResolver().notifyChange(uri, null);
         db.close();
         return returnUri;
@@ -116,6 +118,7 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        @SuppressWarnings("UnusedAssignment")
         int rowsDeleted = 0;
         switch (uriMatcher.match(uri) ) {
             case FAVORITES:
@@ -129,7 +132,7 @@ public class MovieProvider extends ContentProvider {
             case FAVORITE_WITH_ID:
                 String paramMovieId = uri.getLastPathSegment();
                 try {
-                    int checkMovieId = Integer.parseInt(paramMovieId);
+                    @SuppressWarnings("unused") int checkMovieId = Integer.parseInt(paramMovieId);
                 } catch (NumberFormatException e) {
                     System.out.println("Not valid TMDB movie ID: " + e);
                 }
@@ -142,6 +145,7 @@ public class MovieProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsDeleted != 0) {
+            //noinspection ConstantConditions
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;

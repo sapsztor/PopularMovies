@@ -24,13 +24,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
     private static final String API_KEY = com.dwbi.android.popularmovies.BuildConfig.API_KEY;
     
-    private static String BASE_URL = "http://api.themoviedb.org/";
+    @SuppressWarnings("FieldCanBeLocal")
+    private static final String BASE_URL = "http://api.themoviedb.org/";
 
    
-    String sortBy;
-    String pageNum;
+    private final String sortBy;
+    @SuppressWarnings("CanBeFinal")
+    private String pageNum;
 
-    ArrayList<Movie> result = null;
+    private ArrayList<Movie> result = null;
 
     public TMDBQueryLoader(Context context, String sortBy, String pageNum) {
         super(context);
@@ -81,6 +83,7 @@ public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
         try {
             Response<Movies> response = call.execute();
             Movies movies = response.body();
+            //noinspection ConstantConditions
             return (ArrayList<Movie>) movies.getMovies();
         } catch (IOException e) {
             Log.d("PSX", "e-> " + e);

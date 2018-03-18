@@ -35,15 +35,15 @@ import java.util.ArrayList;
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = "PSX";
     
-    public static final int TRAILER_LOADER_ID = 3;
-    public static final int REVIEW_LOADER_ID = 4;
+    private static final int TRAILER_LOADER_ID = 3;
+    private static final int REVIEW_LOADER_ID = 4;
     
-    private LoaderManager.LoaderCallbacks<ArrayList<Trailer>> trailersLoaderCallback = new TrailersLoaderCallback();
-    private LoaderManager.LoaderCallbacks<ArrayList<Review>> reviewsLoaderCallbacks = new ReviewsLoaderCallback();
+    private final LoaderManager.LoaderCallbacks<ArrayList<Trailer>> trailersLoaderCallback = new TrailersLoaderCallback();
+    private final LoaderManager.LoaderCallbacks<ArrayList<Review>> reviewsLoaderCallbacks = new ReviewsLoaderCallback();
     
     //GridView gv_trailer;
-    ExpandableGridView gv_trailer;
-    ExpandableGridView gv_review;
+    private ExpandableGridView gv_trailer;
+    private ExpandableGridView gv_review;
     
     @Override
     protected void onCreate(Bundle bundle) {
@@ -73,19 +73,27 @@ public class DetailActivity extends AppCompatActivity {
         //noinspection RedundantCast
         tv_release_date = (TextView) findViewById(R.id.tv_release_date);
         
-        btn_favorite_toggle = (ToggleButton) findViewById(R.id.btn_favorite_toggle);
+        btn_favorite_toggle = findViewById(R.id.btn_favorite_toggle);
         
         //gv_trailer = (GridView) findViewById(R.id.gv_videos);
-        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_trailers);
-        gv_review = (ExpandableGridView) findViewById(R.id.gv_reviews);
+        gv_trailer = findViewById(R.id.gv_trailers);
+        gv_review = findViewById(R.id.gv_reviews);
         
         
         
         
 
         Intent intent = getIntent();
-        final Movie movie = intent.getExtras().getParcelable(getString(R.string.extra_selectedmovie));
+        final Movie movie ;
+        if(intent.hasExtra(getString(R.string.extra_selectedmovie))){
+            //noinspection ConstantConditions
+            movie = intent.getExtras().getParcelable(getString(R.string.extra_selectedmovie));
+        } else {
+            return;
+        }
+        
 
+        @SuppressWarnings("ConstantConditions")
         String tmdbID = movie.getId();
         String posterpath = movie.getPosterPath();
         String title = movie.getTitle();
@@ -156,27 +164,26 @@ public class DetailActivity extends AppCompatActivity {
     //----------------------------------------------------------------------------------------------
     private boolean checkFavorite(Movie movie) {
         String tmdbID = movie.getId();
-        boolean movie_is_favorite = false;
+        boolean movie_is_favorite;
         
     
         Uri uri = MovieContract.MovieEntry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(tmdbID).build();
     
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        try {
+        try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+            //noinspection ConstantConditions
             if (cursor.moveToFirst()) {
                 cursor.close();
                 movie_is_favorite = true;
             } else {
                 movie_is_favorite = false;
             }
-        } finally {
-            cursor.close();
         }
         
         return movie_is_favorite;
     }
     //----------------------------------------------------------------------------------------------
+    @SuppressWarnings("unused")
     private void dumpDB() {
         Log.d("PSX", "dumpDB");
         String[] projection = {MovieContract.MovieEntry.COLUMN_MOVIE_ID, MovieContract.MovieEntry.COLUMN_MOVIE_TITLE};
@@ -205,20 +212,14 @@ public class DetailActivity extends AppCompatActivity {
                 return null;
             }
             String movieId = args.getString("movieId");
-            
-            
-            TMDBTrailerLoader loader = new TMDBTrailerLoader(DetailActivity.this, movieId);
-            
-            return loader;
+    
+    
+            return new TMDBTrailerLoader(DetailActivity.this, movieId);
         }
         //------------------------------------------------------------------------------------------
         @Override
         public void onLoadFinished(Loader<ArrayList<Trailer>> loader, ArrayList<Trailer> data) {
-            if (data == null) {
-            } else {
-//                for(Trailer t: data){
-//                    Log.d("PSX", "DetailActivity TrailerLoader onLoadFinished data.name, data.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
-//                }
+            if (data != null) {
                 trailerLoaderResponse(data);
             }
         }
@@ -239,20 +240,14 @@ public class DetailActivity extends AppCompatActivity {
                 return null;
             }
             String movieId = args.getString("movieId");
-            
-            
-            TMDBReviewLoader loader = new TMDBReviewLoader(DetailActivity.this, movieId);
-            
-            return loader;
+    
+    
+            return new TMDBReviewLoader(DetailActivity.this, movieId);
         }
         //------------------------------------------------------------------------------------------
         @Override
         public void onLoadFinished(Loader<ArrayList<Review>> loader, ArrayList<Review> data) {
-            if (data == null) {
-            } else {
-//                for(Trailer t: data){
-//                    Log.d("PSX", "DetailActivity TrailerLoader onLoadFinished data.name, data.key-> "+ t.getType() + ", " + t.getName() + ", " + t.getName() + ", " + t.getKey());
-//                }
+            if (data != null) {
                 reviewLoaderResponse(data);
             }
         }
@@ -261,8 +256,7 @@ public class DetailActivity extends AppCompatActivity {
         public void onLoaderReset(Loader<ArrayList<Review>> loader) {
         
         }
-        //------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------
+
     }
     
     //----------------------------------------------------------------------------------------------
@@ -275,22 +269,22 @@ public class DetailActivity extends AppCompatActivity {
         loadBundle.putString("movieId", movieId);
         
         LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<ArrayList<Trailer>> movieLoader = loaderManager.getLoader(TRAILER_LOADER_ID);
+        //Loader<ArrayList<Trailer>> movieLoader = loaderManager.getLoader(TRAILER_LOADER_ID);
         loaderManager.restartLoader(TRAILER_LOADER_ID, loadBundle, trailersLoaderCallback);
 
-        Loader<ArrayList<Review>> reviewLoader = loaderManager.getLoader(REVIEW_LOADER_ID);
+        //Loader<ArrayList<Review>> reviewLoader = loaderManager.getLoader(REVIEW_LOADER_ID);
         loaderManager.restartLoader(REVIEW_LOADER_ID, loadBundle, reviewsLoaderCallbacks);
 
     }
     //----------------------------------------------------------------------------------------------
-    public void trailerLoaderResponse(ArrayList<Trailer> response) {
-        gv_trailer = (ExpandableGridView) findViewById(R.id.gv_trailers);
+    private void trailerLoaderResponse(ArrayList<Trailer> response) {
+        gv_trailer = findViewById(R.id.gv_trailers);
         gv_trailer.setAdapter(new TrailersAdapter(this, response));
         gv_trailer.setExpanded(true);
     }
     //----------------------------------------------------------------------------------------------
-    public void reviewLoaderResponse(ArrayList<Review> response) {
-        gv_review = (ExpandableGridView) findViewById(R.id.gv_reviews);
+    private void reviewLoaderResponse(ArrayList<Review> response) {
+        gv_review = findViewById(R.id.gv_reviews);
         gv_review.setAdapter(new ReviewsAdapter(this, response));
         gv_review.setExpanded(true);
     }

@@ -5,7 +5,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 
-import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.model.Trailer;
 import com.dwbi.android.popularmovies.model.Trailers;
 import com.dwbi.android.popularmovies.utilities.TMDBAPI;
@@ -26,11 +25,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
     private static final String API_KEY = com.dwbi.android.popularmovies.BuildConfig.API_KEY;
     
-    private static String BASE_URL = "http://api.themoviedb.org/";
+    @SuppressWarnings("FieldCanBeLocal")
+    private static final String BASE_URL = "http://api.themoviedb.org/";
     
-    String id;
+    @SuppressWarnings("CanBeFinal")
+    private String id;
     
-    ArrayList<Trailer> result = null;
+    private ArrayList<Trailer> result = null;
     
     
     public TMDBTrailerLoader(Context context, String id) {
@@ -38,11 +39,11 @@ public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
         this.id = id;
     }
     
-    private ArrayList<Trailer> filterTrailer(ArrayList<Trailer> data, String typetoKeep){
+    private ArrayList<Trailer> filterTrailer(ArrayList<Trailer> data, @SuppressWarnings("SameParameterValue") String typetoKeep){
         ListIterator<Trailer> iter = data.listIterator();
         
         while (iter.hasNext()) {
-            Trailer t = data.get(iter.nextIndex());
+            //Trailer t = data.get(iter.nextIndex());
             
             if( !iter.next().getType().contains(typetoKeep) ){
                 iter.remove();
@@ -94,6 +95,7 @@ public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
         try {
             Response<Trailers> response = call.execute();
             Trailers trailers = response.body();
+            //noinspection ConstantConditions
             return (ArrayList<Trailer>) trailers.getTrailers();
         } catch (IOException e) {
             Log.d("PSX", "e-> " + e);

@@ -2,13 +2,13 @@ package com.dwbi.android.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.gson.annotations.SerializedName;
 
 
 /**
  * Created by PSX on 2/8/2018.
  */
 
+@SuppressWarnings("unused")
 public class Trailer implements Parcelable {
 
     private final String id;

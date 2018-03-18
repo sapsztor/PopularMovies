@@ -2,7 +2,6 @@ package com.dwbi.android.popularmovies.utilities;
 
 import android.support.v7.widget.RecyclerView;
 
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -10,6 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 /**
  * https://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView#implementing-with-recyclerview
  */
+
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
@@ -22,10 +22,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // True if we are still waiting for the last set of data to load.
     private boolean loading = true;
     // Sets the starting page index
-    private int startingPageIndex = 0;
+    private final int startingPageIndex = 0;
 
-    RecyclerView.LayoutManager mLayoutManager;
+    private final RecyclerView.LayoutManager mLayoutManager;
 
+    @SuppressWarnings("unused")
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
     }
@@ -35,12 +36,13 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
+    @SuppressWarnings("unused")
     public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
-    public int getLastVisibleItem(int[] lastVisibleItemPositions) {
+    private int getLastVisibleItem(int[] lastVisibleItemPositions) {
         int maxSize = 0;
         for (int i = 0; i < lastVisibleItemPositions.length; i++) {
             if (i == 0) {
@@ -100,6 +102,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     }
 
     // Call this method whenever performing new searches
+    @SuppressWarnings("unused")
     public void resetState() {
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
@@ -107,6 +110,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     }
 
     // Defines the process for actually loading more data based on page
-    public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view);
+    public abstract void onLoadMore(int page, int totalItemsCount, @SuppressWarnings("unused") RecyclerView view);
 
 }

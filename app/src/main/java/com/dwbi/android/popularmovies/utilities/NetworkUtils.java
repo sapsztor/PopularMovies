@@ -1,10 +1,5 @@
 package com.dwbi.android.popularmovies.utilities;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -34,6 +29,8 @@ public class NetworkUtils {
     //private static final String API_KEY = BuildConfig.API_KEY;
 
 
+
+    @SuppressWarnings("unused")
     public static URL buildQueryUrl(String sortBy , String pageNum) {
         Log.d("PSX", "NetworkUtils.buildQueryUrl.sortBy-> " + sortBy);
 
@@ -69,6 +66,7 @@ public class NetworkUtils {
      * @return The contents of the HTTP response.
      * @throws IOException Related to network and stream reading
      */
+    @SuppressWarnings("unused")
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {

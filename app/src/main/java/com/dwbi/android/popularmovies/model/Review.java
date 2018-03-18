@@ -13,12 +13,14 @@ public class Review implements Parcelable {
     private final String author;
     private final String content;
     
+    @SuppressWarnings("unused")
     public Review(String id, String author, String content) {
         this.id = id;
         this.author = author;
         this.content = content;
     }
     
+    @SuppressWarnings("unused")
     public String getId() {return id;}
     public String getAuthor() {return author;}
     public String getContent() {return content;}
@@ -29,6 +31,7 @@ public class Review implements Parcelable {
         this.content = in.readString();
     }
     
+    @SuppressWarnings("unused")
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         @Override
         public Review createFromParcel(Parcel source) {

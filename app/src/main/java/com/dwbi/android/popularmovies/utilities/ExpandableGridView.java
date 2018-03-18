@@ -11,6 +11,7 @@ import android.widget.GridView;
  * https://stackoverflow.com/questions/4523609/grid-of-images-inside-scrollview/4536955#4536955
  */
 
+@SuppressWarnings("ALL")
 public class ExpandableGridView extends GridView {
     
     boolean expanded = false;
