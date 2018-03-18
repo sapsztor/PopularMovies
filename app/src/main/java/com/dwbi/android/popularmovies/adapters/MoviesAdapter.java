@@ -1,15 +1,13 @@
-package com.dwbi.android.popularmovies;
+package com.dwbi.android.popularmovies.adapters;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.dwbi.android.popularmovies.R;
 import com.dwbi.android.popularmovies.model.Movie;
 
 import java.util.ArrayList;
@@ -29,9 +27,6 @@ import com.squareup.picasso.Picasso;
     private ArrayList<Movie> movieData = new ArrayList<>();
 
     @SuppressWarnings("CanBeFinal")
-    private  Handler handler_to_main ;
-
-    @SuppressWarnings("CanBeFinal")
     private AdapterStatusListener callback;
     //--------------------------------------------------------------------------
 
@@ -41,10 +36,8 @@ import com.squareup.picasso.Picasso;
 
     //--------------------------------------------------------------------------
 
-    public MoviesAdapter(AdapterStatusListener parent, Handler handler) {
+    public MoviesAdapter(AdapterStatusListener parent) {
         this.callback = parent;
-        this.handler_to_main = handler;
-
     }
 
     //--------------------------------------------------------------------------
@@ -93,24 +86,12 @@ import com.squareup.picasso.Picasso;
 
 
     }
-
-    //--------------------------------------------------------------------------
-
     //----------------------------------------------------------------------------------------------
     @Override
     public void onViewAttachedToWindow(MovieViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         int position = holder.getAdapterPosition();
-
-
-        int Gap = 6;
-        if (position == (getItemCount() - Gap)) {
-            Message msg = handler_to_main.obtainMessage(1);
-            handler_to_main.sendMessage(msg);
-        }
-
     }
-
     //--------------------------------------------------------------------------
     class MovieViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
         @SuppressWarnings("CanBeFinal")
@@ -123,8 +104,7 @@ import com.squareup.picasso.Picasso;
 
             callback.onListItemClick(currMovie);
         }
-
-
+    //--------------------------------------------------------------------------
         public MovieViewHolder(View itemView) {
             super(itemView);
             listItemPosterView =  itemView.findViewById(R.id.iv_video_poster);

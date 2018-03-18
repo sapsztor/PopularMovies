@@ -1,4 +1,4 @@
-package com.dwbi.android.popularmovies.utilities;
+package com.dwbi.android.popularmovies.loaders;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,7 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
-import com.dwbi.android.popularmovies.FavoriteMoviesAdapter;
+import com.dwbi.android.popularmovies.adapters.FavoriteMoviesAdapter;
 import com.dwbi.android.popularmovies.model.MovieContract;
 
 import static com.dwbi.android.popularmovies.MainActivity.FAVORITE_LOADER_ID;

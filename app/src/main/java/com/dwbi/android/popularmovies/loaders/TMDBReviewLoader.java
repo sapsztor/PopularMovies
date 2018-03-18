@@ -1,11 +1,12 @@
-package com.dwbi.android.popularmovies;
+package com.dwbi.android.popularmovies.loaders;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import com.dwbi.android.popularmovies.model.Movie;
-import com.dwbi.android.popularmovies.model.Movies;
+
+import com.dwbi.android.popularmovies.model.Review;
+import com.dwbi.android.popularmovies.model.Reviews;
 import com.dwbi.android.popularmovies.utilities.TMDBAPI;
 
 import java.io.IOException;
@@ -17,44 +18,35 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by PSX on 10/27/2017.
+ * Created by PSX on 3/16/2018.
  */
-// http://www.androiddesignpatterns.com/2012/08/implementing-loaders.html
 
-public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
+public class TMDBReviewLoader extends AsyncTaskLoader<ArrayList<Review>>{
     private static final String API_KEY = com.dwbi.android.popularmovies.BuildConfig.API_KEY;
     
     private static String BASE_URL = "http://api.themoviedb.org/";
-
-   
-    String sortBy;
-    String pageNum;
-
-    ArrayList<Movie> result = null;
-
-    public TMDBQueryLoader(Context context, String sortBy, String pageNum) {
+    
+    String id;
+    
+    ArrayList<Review> result = null;
+    
+    
+    public TMDBReviewLoader(Context context, String id) {
         super(context);
-        this.sortBy = sortBy;
-        this.pageNum = pageNum;
+        this.id = id;
     }
-
-
-
-
+    
     @Override
     protected void onStartLoading() {
-        //super.onStartLoading();
-
         if (result != null) {
             deliverResult(result);
         } else {
             forceLoad();
         }
     }
-
-
+    
     @Override
-    public void deliverResult(ArrayList<Movie> data) {
+    public void deliverResult(ArrayList<Review> data) {
         if (isReset()) {
             return;
         }
@@ -62,34 +54,33 @@ public class TMDBQueryLoader extends AsyncTaskLoader<ArrayList<Movie>> {
         if(isStarted()){
             super.deliverResult(data);
         }
-
+        
     }
-
+    
+    
     @Override
-    public ArrayList<Movie> loadInBackground() {
+    public ArrayList<Review> loadInBackground() {
         //----------------------- RETROFIT ---------------------------------------------------------
-
+        
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+        
         TMDBAPI tmdbapi = retrofit.create(TMDBAPI.class);
-
-        Call<Movies> call = tmdbapi.getMovies(sortBy, pageNum, API_KEY);
-
+        
+        Call<Reviews> call = tmdbapi.getReviews(id, API_KEY);
+        
         try {
-            Response<Movies> response = call.execute();
-            Movies movies = response.body();
-            return (ArrayList<Movie>) movies.getMovies();
+            Response<Reviews> response = call.execute();
+            Reviews trailers = response.body();
+            return (ArrayList<Review>) trailers.getReviews();
         } catch (IOException e) {
             Log.d("PSX", "e-> " + e);
         }
         //----------------------- RETROFIT ---------------------------------------------------------
-
-        // TODO: checking empty result!
+        
         return null;
-
+        
     }
-
 }

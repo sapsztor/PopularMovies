@@ -1,4 +1,4 @@
-package com.dwbi.android.popularmovies;
+package com.dwbi.android.popularmovies.loaders;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;

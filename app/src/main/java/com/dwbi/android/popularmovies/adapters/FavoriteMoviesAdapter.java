@@ -1,9 +1,8 @@
-package com.dwbi.android.popularmovies;
+package com.dwbi.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.dwbi.android.popularmovies.DetailActivity;
 import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.model.MovieContract;
 import com.dwbi.android.popularmovies.utilities.NetworkUtils;

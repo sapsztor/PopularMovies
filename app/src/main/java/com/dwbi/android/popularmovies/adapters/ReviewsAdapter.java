@@ -1,4 +1,4 @@
-package com.dwbi.android.popularmovies;
+package com.dwbi.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.dwbi.android.popularmovies.R;
 import com.dwbi.android.popularmovies.model.Review;
 
 import java.util.ArrayList;

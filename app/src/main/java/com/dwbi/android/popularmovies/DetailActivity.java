@@ -17,10 +17,15 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 
+import com.dwbi.android.popularmovies.adapters.ReviewsAdapter;
+import com.dwbi.android.popularmovies.adapters.TrailersAdapter;
+import com.dwbi.android.popularmovies.loaders.TMDBReviewLoader;
+import com.dwbi.android.popularmovies.loaders.TMDBTrailerLoader;
 import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.model.MovieContract;
 import com.dwbi.android.popularmovies.model.Review;
 import com.dwbi.android.popularmovies.model.Trailer;
+import com.dwbi.android.popularmovies.utilities.ExpandableGridView;
 import com.dwbi.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -43,8 +48,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        //setContentView(R.layout.activity_detail);
-        //setContentView(R.layout.activity_detail3);
+
         setContentView(R.layout.activity_detail);
 
         TextView tv_title;
@@ -100,9 +104,7 @@ public class DetailActivity extends AppCompatActivity {
             btn_favorite_toggle.setChecked(false);
         }
         
-        // TODO: delete debug
-        //dumpDB();
-        
+       
         Log.d(TAG, "DetailActivity.onCreate tmdbID-> " + tmdbID);
         startQuery(tmdbID);
         
@@ -129,9 +131,6 @@ public class DetailActivity extends AppCompatActivity {
                 //dumpDB();
             }
         });
-        
-        //gv_trailer.setAdapter(new TrailersAdapter(this, ));
-        
     }
 
     //----------------------------------------------------------------------------------------------
@@ -272,11 +271,6 @@ public class DetailActivity extends AppCompatActivity {
         Log.d("PSX", "DetailActivity startQuery movieId-> " + movieId);
         
             
-            //setAdapter();
-//            pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
-//            pb_loading_indicator.setVisibility(View.VISIBLE);
-        // TODO:  put checkInternetConnection to NetworkUtils class
-        //checkInternetConnection();
         Bundle loadBundle = new Bundle();
         loadBundle.putString("movieId", movieId);
         
@@ -284,14 +278,12 @@ public class DetailActivity extends AppCompatActivity {
         Loader<ArrayList<Trailer>> movieLoader = loaderManager.getLoader(TRAILER_LOADER_ID);
         loaderManager.restartLoader(TRAILER_LOADER_ID, loadBundle, trailersLoaderCallback);
 
-        // PSX
         Loader<ArrayList<Review>> reviewLoader = loaderManager.getLoader(REVIEW_LOADER_ID);
         loaderManager.restartLoader(REVIEW_LOADER_ID, loadBundle, reviewsLoaderCallbacks);
 
     }
     //----------------------------------------------------------------------------------------------
     public void trailerLoaderResponse(ArrayList<Trailer> response) {
-        //gv_trailer = (GridView) findViewById(R.id.gv_videos);
         gv_trailer = (ExpandableGridView) findViewById(R.id.gv_trailers);
         gv_trailer.setAdapter(new TrailersAdapter(this, response));
         gv_trailer.setExpanded(true);

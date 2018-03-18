@@ -1,4 +1,4 @@
-package com.dwbi.android.popularmovies;
+package com.dwbi.android.popularmovies.adapters;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.dwbi.android.popularmovies.R;
 import com.dwbi.android.popularmovies.model.Trailer;
 import com.squareup.picasso.Picasso;
 
@@ -121,17 +122,7 @@ public class TrailersAdapter extends BaseAdapter {
         }
     }
     
-    /*
-    protected boolean isAppInstalled(String packageName) {
-        Intent mIntent = getPackageManager().getLaunchIntentForPackage(packageName);
-        if (mIntent != null) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-     */
+
     private boolean checkYoutubePlayer() {
         PackageManager pm = mContext.getPackageManager();
         boolean installed = false;

@@ -1,4 +1,4 @@
-package com.dwbi.android.popularmovies;
+package com.dwbi.android.popularmovies.utilities;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -8,11 +8,8 @@ import android.content.Intent;
 // import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +17,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
 
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,9 +29,12 @@ import android.support.v4.content.Loader;
 import android.support.v4.app.LoaderManager;
 //import android.support.v4.app.LoaderManager.LoaderCallbacks;
 
+import com.dwbi.android.popularmovies.adapters.FavoriteMoviesAdapter;
+import com.dwbi.android.popularmovies.adapters.MoviesAdapter;
+import com.dwbi.android.popularmovies.loaders.TMDBQueryLoader;
 import com.dwbi.android.popularmovies.model.Movie;
 import com.dwbi.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
-import com.dwbi.android.popularmovies.utilities.FavoriteQueryLoader;
+import com.dwbi.android.popularmovies.loaders.FavoriteQueryLoader;
 
 import java.util.ArrayList;
 
@@ -93,28 +92,10 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         }
         //------------------------------------------------------------------------------------------
         @Override
-        public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
-
-        }
-        //------------------------------------------------------------------------------------------
+        public void onLoaderReset(Loader<ArrayList<Movie>> loader) {}
         //------------------------------------------------------------------------------------------
     }
     
-
-    
-    //--------------------------------------------------------------------------
-    private final Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1 :
-                    //queryMore();
-                    Log.d("PSX", "MainActivity.querymore-> skipped from handler");
-                    break;
-                default :
-            }
-        }
-    };
     //----------------------------------------------------------------------------------------------
     private int getSpan() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -147,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
             favAdapter = new FavoriteMoviesAdapter(this);
             rv_video_thumb.setAdapter(favAdapter);
         } else {
-            adapter = new MoviesAdapter(this, handler);
+            //adapter = new MoviesAdapter(this, handler);
+            adapter = new MoviesAdapter(this);
             rv_video_thumb.setAdapter(adapter);
         }
     }
@@ -167,11 +149,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         }
 
         initRecyclerView();
-//        if (savedInstanceState != null) {
-//            recyclerViewState = savedInstanceState.getParcelable(KEY_RECYCLER_STATE);
-//            rv_video_thumb.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-//
-//        }
+
         pageNum = 1;
         
         startQuery(getQueryPreference(), pageNum);
@@ -210,12 +188,6 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     }
     
     //----------------------------------------------------------------------------------------------
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-    //----------------------------------------------------------------------------------------------
     @Override
     public void onListItemClick(Movie movie) {
         // save position until we get back from detailActivity
@@ -235,33 +207,36 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         return true;
     }
     //----------------------------------------------------------------------------------------------
-    //TODO: starting network setting implicit intent
-    private void checkInternetConnection (){
-        if (isOnline()) {
+    private void checkInternetConnection(){
+        boolean isOnline;
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        isOnline = (netInfo != null && netInfo.isConnectedOrConnecting());
+    
+        if(isOnline) {
             return;
         } else {
             try {
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-
+        
                 alertDialog.setTitle("Info");
                 alertDialog.setMessage("Internet not available, Check your internet connectivity and try again");
                 alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-
+        
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                finish();
-                                //dialog.dismiss();
-                            }
-                        });
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                    
+                            finish();
+                        }
+                    });
                 alertDialog.show();
-            }
-            catch(Exception e)
+            } catch(Exception e)
             {
                 Log.d("PSX", "Show Dialog: "+e.getMessage());
             }
         }
+    
     }
     //----------------------------------------------------------------------------------------------
     private void startQuery(String sortBy, int pageNum){
@@ -278,7 +253,9 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
             //setAdapter();
             pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
             pb_loading_indicator.setVisibility(View.VISIBLE);
+            
             checkInternetConnection();
+            
             Bundle loadBundle = new Bundle();
             loadBundle.putString("sortBy", sortBy);
             loadBundle.putString("pageNum", Integer.toString(pageNum));
@@ -354,8 +331,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     private void setQueryPreference(String sortOrder) {
         SharedPreferences prefs = this.getPreferences(MODE_PRIVATE);
         String text = prefs.getString(getString(R.string.preferred_sort_order), null);
-        //noinspection StringEquality
-        if(text == null || text != sortOrder) {
+
+        if(text == null || ! text.equals(sortOrder)) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(getString(R.string.preferred_sort_order), sortOrder);
             editor.apply();
