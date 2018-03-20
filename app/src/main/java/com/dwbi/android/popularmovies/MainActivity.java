@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     @Override
     public void onListItemClick(Movie movie) {
         // save position until we get back from detailActivity
-
+        
         Context context = this;
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(getString(R.string.extra_selectedmovie), movie);
@@ -197,11 +197,9 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         } else {
             try {
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        
                 alertDialog.setTitle("Info");
                 alertDialog.setMessage("Internet not available, Check your internet connectivity and try again");
                 alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-        
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -212,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
                 alertDialog.show();
             } catch(Exception e)
             {
-                Log.d("PSX", "Show Dialog: "+e.getMessage());
+                Log.d("PSX", "Show Dialog: " + e.getMessage());
             }
         }
     
@@ -220,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     //----------------------------------------------------------------------------------------------
     private void startQuery(String sortBy, int pageNum){
 
-        Log.d("PSX", "startQuery pageNum-> " + pageNum);
+        //Log.d("PSX", "startQuery pageNum-> " + pageNum);
         if(pageNum == 1 ) {
             setAdapter();
         }

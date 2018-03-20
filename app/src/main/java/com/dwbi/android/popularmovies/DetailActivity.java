@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-//import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -114,6 +113,8 @@ public class DetailActivity extends AppCompatActivity {
         
        
         Log.d(TAG, "DetailActivity.onCreate tmdbID-> " + tmdbID);
+        
+        
         startQuery(tmdbID);
         
         
@@ -258,6 +259,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
     }
+
     
     //----------------------------------------------------------------------------------------------
     private void startQuery(String movieId){
@@ -267,7 +269,7 @@ public class DetailActivity extends AppCompatActivity {
             
         Bundle loadBundle = new Bundle();
         loadBundle.putString("movieId", movieId);
-        
+    
         LoaderManager loaderManager = getSupportLoaderManager();
         //Loader<ArrayList<Trailer>> movieLoader = loaderManager.getLoader(TRAILER_LOADER_ID);
         loaderManager.restartLoader(TRAILER_LOADER_ID, loadBundle, trailersLoaderCallback);
@@ -279,14 +281,19 @@ public class DetailActivity extends AppCompatActivity {
     //----------------------------------------------------------------------------------------------
     private void trailerLoaderResponse(ArrayList<Trailer> response) {
         gv_trailer = findViewById(R.id.gv_trailers);
-        gv_trailer.setAdapter(new TrailersAdapter(this, response));
-        gv_trailer.setExpanded(true);
+        if(response != null) {
+            gv_trailer.setAdapter(new TrailersAdapter(this, response));
+            gv_trailer.setExpanded(true);
+        }
     }
     //----------------------------------------------------------------------------------------------
     private void reviewLoaderResponse(ArrayList<Review> response) {
         gv_review = findViewById(R.id.gv_reviews);
-        gv_review.setAdapter(new ReviewsAdapter(this, response));
-        gv_review.setExpanded(true);
+        if(response != null) {
+            gv_review.setAdapter(new ReviewsAdapter(this, response));
+            gv_review.setExpanded(true);
+            
+        }
     }
     //----------------------------------------------------------------------------------------------
     @Override

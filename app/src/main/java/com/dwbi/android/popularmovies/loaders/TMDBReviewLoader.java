@@ -79,7 +79,7 @@ public class TMDBReviewLoader extends AsyncTaskLoader<ArrayList<Review>>{
             //noinspection ConstantConditions
             return (ArrayList<Review>) reviews.getReviews();
         } catch (IOException e) {
-            Log.d("PSX", "e-> " + e);
+            Log.d("PSX", "TMDBReviewLoader e-> " + e);
         }
         //----------------------- RETROFIT ---------------------------------------------------------
         

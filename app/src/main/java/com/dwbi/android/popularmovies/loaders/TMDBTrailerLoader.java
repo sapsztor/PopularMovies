@@ -11,7 +11,7 @@ import com.dwbi.android.popularmovies.utilities.TMDBAPI;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.ListIterator;
+//import java.util.ListIterator;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -39,18 +39,20 @@ public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
         this.id = id;
     }
     
-    private ArrayList<Trailer> filterTrailer(ArrayList<Trailer> data, @SuppressWarnings("SameParameterValue") String typetoKeep){
-        ListIterator<Trailer> iter = data.listIterator();
-        
-        while (iter.hasNext()) {
-            //Trailer t = data.get(iter.nextIndex());
-            
-            if( !iter.next().getType().contains(typetoKeep) ){
-                iter.remove();
-            }
-        }
-        return data;
-    }
+// --Commented out by Inspection START (3/20/2018 11:20 PM):
+//    private ArrayList<Trailer> filterTrailer(ArrayList<Trailer> data, @SuppressWarnings("SameParameterValue") String typetoKeep){
+//        ListIterator<Trailer> iter = data.listIterator();
+//
+//        while (iter.hasNext()) {
+//            //Trailer t = data.get(iter.nextIndex());
+//
+//            if( !iter.next().getType().contains(typetoKeep) ){
+//                iter.remove();
+//            }
+//        }
+//        return data;
+//    }
+// --Commented out by Inspection STOP (3/20/2018 11:20 PM)
     
     @Override
     protected void onStartLoading() {
@@ -67,9 +69,8 @@ public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
             return;
         }
         
-        //result = data;
-        
-        result = filterTrailer(data, "Trailer");
+        //result = filterTrailer(data, "Trailer");
+        result = data;
         
         
         if(isStarted()){
@@ -98,10 +99,9 @@ public class TMDBTrailerLoader extends AsyncTaskLoader<ArrayList<Trailer>> {
             //noinspection ConstantConditions
             return (ArrayList<Trailer>) trailers.getTrailers();
         } catch (IOException e) {
-            Log.d("PSX", "e-> " + e);
+            Log.d("PSX", "TMDBTrailerLoader e-> " + e);
         }
         //----------------------- RETROFIT ---------------------------------------------------------
-        
         return null;
         
     }
