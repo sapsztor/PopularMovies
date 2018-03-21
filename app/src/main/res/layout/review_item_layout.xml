@@ -12,7 +12,7 @@
         android:orientation="vertical"
         tools:ignore="UselessParent">
         <TextView
-            android:id="@+id/tv_review_author"
+            android:id="@+id/tvReviewAuthor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/inside_grid_label_padding"
@@ -20,7 +20,7 @@
             android:textStyle="normal|bold"
             tools:ignore="RtlSymmetry" />
         <TextView
-            android:id="@+id/tv_review_content"
+            android:id="@+id/tvReviewContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 

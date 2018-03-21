@@ -40,9 +40,9 @@ public class DetailActivity extends AppCompatActivity {
     private final LoaderManager.LoaderCallbacks<ArrayList<Trailer>> trailersLoaderCallback = new TrailersLoaderCallback();
     private final LoaderManager.LoaderCallbacks<ArrayList<Review>> reviewsLoaderCallbacks = new ReviewsLoaderCallback();
     
-    //GridView gv_trailer;
-    private ExpandableGridView gv_trailer;
-    private ExpandableGridView gv_review;
+    //GridView gvTrailer;
+    private ExpandableGridView gvTrailer;
+    private ExpandableGridView gvReview;
     
     @Override
     protected void onCreate(Bundle bundle) {
@@ -50,33 +50,33 @@ public class DetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_detail);
 
-        TextView tv_title;
-        ImageView iv_poster;
-        TextView tv_overview;
-        TextView tv_vote_average;
-        TextView tv_release_date;
+        TextView tvTitle;
+        ImageView ivPoster;
+        TextView tvOverview;
+        TextView tvVoteAverage;
+        TextView tvReleaseDate;
         
-        final ToggleButton btn_favorite_toggle;
+        final ToggleButton btnFavoriteToggle;
         
         
 
 
         //noinspection RedundantCast
-        tv_title = (TextView) findViewById(R.id.tv_title);
+        tvTitle = (TextView) findViewById(R.id.tvTitle);
         //noinspection RedundantCast
-        iv_poster = (ImageView) findViewById(R.id.iv_poster);
+        ivPoster = (ImageView) findViewById(R.id.ivPoster);
         //noinspection RedundantCast
-        tv_overview = (TextView) findViewById(R.id.tv_overview);
+        tvOverview = (TextView) findViewById(R.id.tvOverview);
         //noinspection RedundantCast
-        tv_vote_average = (TextView) findViewById(R.id.tv_vote_average);
+        tvVoteAverage = (TextView) findViewById(R.id.tvVoteAverage);
         //noinspection RedundantCast
-        tv_release_date = (TextView) findViewById(R.id.tv_release_date);
+        tvReleaseDate = (TextView) findViewById(R.id.tvReleaseDate);
         
-        btn_favorite_toggle = findViewById(R.id.btn_favorite_toggle);
+        btnFavoriteToggle = findViewById(R.id.btnFavoriteToggle);
         
-        //gv_trailer = (GridView) findViewById(R.id.gv_videos);
-        gv_trailer = findViewById(R.id.gv_trailers);
-        gv_review = findViewById(R.id.gv_reviews);
+        //gvTrailer = (GridView) findViewById(R.id.gv_videos);
+        gvTrailer = findViewById(R.id.gvTrailers);
+        gvReview = findViewById(R.id.gvReviews);
         
         
         
@@ -100,15 +100,15 @@ public class DetailActivity extends AppCompatActivity {
         String vote_average = movie.getVote_Average();
         String release_date = movie.getRelease_Date().substring(0,4);
 
-        tv_title.setText(title);
-        tv_overview.setText(overview);
-        tv_vote_average.setText(vote_average);
-        tv_release_date.setText(release_date);
+        tvTitle.setText(title);
+        tvOverview.setText(overview);
+        tvVoteAverage.setText(vote_average);
+        tvReleaseDate.setText(release_date);
     
         if (checkFavorite(movie)) {
-            btn_favorite_toggle.setChecked(true);
+            btnFavoriteToggle.setChecked(true);
         } else {
-            btn_favorite_toggle.setChecked(false);
+            btnFavoriteToggle.setChecked(false);
         }
         
        
@@ -122,19 +122,19 @@ public class DetailActivity extends AppCompatActivity {
         Picasso.with(this)
                 .load(NetworkUtils.buildQueryPoster(posterpath))
                 .placeholder(R.drawable.poster_placeholder)
-                .into(iv_poster);
+                .into(ivPoster);
     
         
         
-        btn_favorite_toggle.setOnClickListener(new View.OnClickListener() {
+        btnFavoriteToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!checkFavorite(movie)) {
                     saveFavorite(movie);
-                    btn_favorite_toggle.setChecked(true);
+                    btnFavoriteToggle.setChecked(true);
                 } else {
                     deleteFavorite(movie);
-                    btn_favorite_toggle.setChecked(false);
+                    btnFavoriteToggle.setChecked(false);
                 }
         
                 //dumpDB();
@@ -280,18 +280,18 @@ public class DetailActivity extends AppCompatActivity {
     }
     //----------------------------------------------------------------------------------------------
     private void trailerLoaderResponse(ArrayList<Trailer> response) {
-        gv_trailer = findViewById(R.id.gv_trailers);
+        gvTrailer = findViewById(R.id.gvTrailers);
         if(response != null) {
-            gv_trailer.setAdapter(new TrailersAdapter(this, response));
-            gv_trailer.setExpanded(true);
+            gvTrailer.setAdapter(new TrailersAdapter(this, response));
+            gvTrailer.setExpanded(true);
         }
     }
     //----------------------------------------------------------------------------------------------
     private void reviewLoaderResponse(ArrayList<Review> response) {
-        gv_review = findViewById(R.id.gv_reviews);
+        gvReview = findViewById(R.id.gvReviews);
         if(response != null) {
-            gv_review.setAdapter(new ReviewsAdapter(this, response));
-            gv_review.setExpanded(true);
+            gvReview.setAdapter(new ReviewsAdapter(this, response));
+            gvReview.setExpanded(true);
             
         }
     }

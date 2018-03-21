@@ -73,7 +73,7 @@ public class TrailersAdapter extends BaseAdapter {
     
             //noinspection ConstantConditions
             gridCell = inflater.inflate(R.layout.trailer_item_layout, null);
-            ImageView trailerThumb = gridCell.findViewById(R.id.iv_trailer_thumb);
+            ImageView trailerThumb = gridCell.findViewById(R.id.ivTrailerThumb);
     
             trailerThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
             trailerThumb.setPadding(8,8,8,8);

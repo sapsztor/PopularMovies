@@ -63,8 +63,8 @@ public class ReviewsAdapter extends BaseAdapter {
     
             //noinspection ConstantConditions
             gridCell = inflater.inflate(R.layout.review_item_layout, null) ;
-            TextView reviewContent = gridCell.findViewById(R.id.tv_review_content);
-            TextView reviewAuthor = gridCell.findViewById(R.id.tv_review_author);
+            TextView reviewContent = gridCell.findViewById(R.id.tvReviewContent);
+            TextView reviewAuthor = gridCell.findViewById(R.id.tvReviewAuthor);
             
             reviewContent.setText(reviewData.get(position).getContent() + "\n\n");
             reviewAuthor.setText(reviewData.get(position).getAuthor());

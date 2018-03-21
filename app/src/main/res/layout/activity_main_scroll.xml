@@ -6,13 +6,13 @@
     tools:ignore="MergeRootFrame">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_video_thumb"
+        android:id="@+id/rvVideoThumb"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"/>
 
     <ProgressBar
-        android:id="@+id/pb_loading_indicator"
+        android:id="@+id/pbLoadingIndicator"
         android:layout_height="150dp"
         android:layout_width="match_parent"
         android:layout_gravity="center"

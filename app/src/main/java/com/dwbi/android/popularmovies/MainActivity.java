@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
 
 
 
-    private RecyclerView rv_video_thumb;
-    private ProgressBar pb_loading_indicator;
+    private RecyclerView rvVideoThumb;
+    private ProgressBar pbLoadingIndicator;
 
     @SuppressWarnings("CanBeFinal")
     private ArrayList<Movie> movieData = new ArrayList<>();
@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     //----------------------------------------------------------------------------------------------
     private void initRecyclerView(){
         GridLayoutManager layoutManager = new GridLayoutManager(this, getSpan());
-        rv_video_thumb.setLayoutManager(layoutManager);
-        rv_video_thumb.setHasFixedSize(false);
+        rvVideoThumb.setLayoutManager(layoutManager);
+        rvVideoThumb.setHasFixedSize(false);
         
 
         setAdapter();
@@ -112,18 +112,18 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
                 Log.d("PSX", "EndlessRecyclerViewScrollListener.onLoadMore page-> " + page + " totalItemsCount-> " + totalItemsCount);
             }
         };
-        rv_video_thumb.addOnScrollListener(scrollListener);
+        rvVideoThumb.addOnScrollListener(scrollListener);
 
     }
     //----------------------------------------------------------------------------------------------
     private void setAdapter(){
         if(getQueryPreference().equals(getString(R.string.query_param_value_favorites))){
             favAdapter = new FavoriteMoviesAdapter(this);
-            rv_video_thumb.setAdapter(favAdapter);
+            rvVideoThumb.setAdapter(favAdapter);
         } else {
             //adapter = new MoviesAdapter(this, handler);
             adapter = new MoviesAdapter(this);
-            rv_video_thumb.setAdapter(adapter);
+            rvVideoThumb.setAdapter(adapter);
         }
     }
     //----------------------------------------------------------------------------------------------
@@ -134,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_main_scroll);
         
-        rv_video_thumb =  findViewById(R.id.rv_video_thumb);
-        pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
+        rvVideoThumb =  findViewById(R.id.rvVideoThumb);
+        pbLoadingIndicator =  findViewById(R.id.pbLoadingIndicator);
         
         if(getQueryPreference() == null){
             setQueryPreference(getString(R.string.query_param_value_sortby_popular));
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        recyclerViewState = rv_video_thumb.getLayoutManager().onSaveInstanceState();
+        recyclerViewState = rvVideoThumb.getLayoutManager().onSaveInstanceState();
         String KEY_RECYCLER_STATE = "recycler_state";
         savedInstanceState.putParcelable(KEY_RECYCLER_STATE, recyclerViewState);
 
@@ -228,8 +228,8 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
         } else {
             
             //setAdapter();
-            pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
-            pb_loading_indicator.setVisibility(View.VISIBLE);
+            pbLoadingIndicator =  findViewById(R.id.pbLoadingIndicator);
+            pbLoadingIndicator.setVisibility(View.VISIBLE);
             
             checkInternetConnection();
             
@@ -279,17 +279,17 @@ public class MainActivity extends AppCompatActivity implements  MoviesAdapter.Ad
             adapter.appendData(response);
         }
 
-        if(rv_video_thumb.getAdapter() == null) {
-            rv_video_thumb.setAdapter(adapter);
+        if(rvVideoThumb.getAdapter() == null) {
+            rvVideoThumb.setAdapter(adapter);
         }
         adapter.notifyDataSetChanged();
         
         if(recyclerViewState != null){
-            rv_video_thumb.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            rvVideoThumb.getLayoutManager().onRestoreInstanceState(recyclerViewState);
          }
 
-        pb_loading_indicator =  findViewById(R.id.pb_loading_indicator);
-        pb_loading_indicator.setVisibility(View.INVISIBLE);
+        pbLoadingIndicator =  findViewById(R.id.pbLoadingIndicator);
+        pbLoadingIndicator.setVisibility(View.INVISIBLE);
     }
     //----------------------------------------------------------------------------------------------
 
